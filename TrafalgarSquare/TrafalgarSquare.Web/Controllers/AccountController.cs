@@ -1,32 +1,32 @@
 ﻿namespace TrafalgarSquare.Web.Controllers
 {
-    using System;
-    using System.Globalization;
     using System.Linq;
-    using System.Security.Claims;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Mvc;
+    using Data;
     using Microsoft.AspNet.Identity;
     using Microsoft.AspNet.Identity.Owin;
     using Microsoft.Owin.Security;
-    using TrafalgarSquare.Models;
-    using TrafalgarSquare.Web.ViewModels;
+    using Models;
+    using ViewModels;
 
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
         public AccountController()
+            : base(new TrafalgarSquareData(new TrafalgarSquareDbContext()))
         {
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+            :base(new TrafalgarSquareData(new TrafalgarSquareDbContext()))
         {
-            this.UserManager = userManager;
-            this.SignInManager = signInManager;
+            UserManager = userManager;
+            SignInManager = signInManager;
         }
 
         public ApplicationSignInManager SignInManager
@@ -71,7 +71,7 @@
         {
             if (!ModelState.IsValid)
             {
-                TempData["Error"] = "Loggin error!";
+//                NotyHelper.Error("Loggin error!");
                  
                 return this.View(model);
             }
@@ -80,7 +80,7 @@
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await this.SignInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, shouldLockout: false);
-            TempData["Success"] = "Loggin success!";
+//            NotyHelper.Success("Loggin success!");
             switch (result)
             {
                 case SignInStatus.Success:
@@ -89,11 +89,9 @@
                     return this.View("Lockout");
                 case SignInStatus.RequiresVerification:
                     return this.RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
                 default:
                     this.ModelState.AddModelError("", "Invalid login attempt.");
-                    TempData["Error"] = "Loggin error!";
-                    TempData["Success"] = null;
+//                    NotyHelper.Error("Loggin error!");
                     return this.View(model);
             }        
         }
