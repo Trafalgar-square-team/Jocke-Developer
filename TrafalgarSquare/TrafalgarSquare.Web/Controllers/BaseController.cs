@@ -7,28 +7,30 @@ namespace TrafalgarSquare.Web.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Web.Configuration;
     using System.Web.Mvc;
     using Data;
     using ViewModels;
 
     public abstract class BaseController : Controller
     {
-        private ITrafalgarSquareData data;
-
+        public readonly int PageSize;
         protected BaseController(ITrafalgarSquareData data)
         {
-            this.Data = data;
+            Data = data;
+            ViewBag.Categories = data.Categories.All().Where(c=>!c.IsDisabled).ToList();
+            PageSize = int.Parse(WebConfigurationManager.AppSettings["PageSize"]);
         }
 
-        protected ITrafalgarSquareData Data
+        protected BaseController()
         {
-            get { return this.data; }
-            private set { this.data = value; }
         }
+
+        protected ITrafalgarSquareData Data { get; set; }
 
         protected IEnumerable<TopPostViewModel> Top10Jokes()
         {
-            return this.TopJokes(10);
+            return TopJokes(10);
         }
 
         protected IEnumerable<TopPostViewModel> TopJokes(int showNumber)
@@ -60,10 +62,10 @@ namespace TrafalgarSquare.Web.Controllers
             return topJokes;
         }
 
-        public IEnumerable<PostViewModel> getPostViewModelByCategorieNamePageAndPageSize(string categorieName, int Page, int PageSize)
+        public IEnumerable<PostViewModel> GetPostsByCategory(int categoryId, int page)
         {
 
-            var getPageFromDb = ((Page - 1) * PageSize);
+            var getPageFromDb = ((page - 1) * PageSize);
 
             if (getPageFromDb < 0)
             {
@@ -72,7 +74,7 @@ namespace TrafalgarSquare.Web.Controllers
 
             //TODO Когато заявката иска Пост, който е извън колекцията, да се хвърля правилна грешка, иначе гърми
             var posts = Data.Posts.All()
-                .Where(p => p.Category.Name.Equals(categorieName))
+                .Where(p => p.Category.Id == categoryId)
                 .OrderByDescending(p => p.CreatedDateTime)
                 .Select(p => new PostViewModel
                 {
