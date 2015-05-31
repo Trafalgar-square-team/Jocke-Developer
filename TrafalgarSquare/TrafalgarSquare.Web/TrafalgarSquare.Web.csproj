@@ -214,6 +214,7 @@
     <Compile Include="Controllers\CommentsController.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Helpers\NotyHelper.cs" />
     <Compile Include="Hubs\CustomUserIdProvider.cs" />
     <Compile Include="ViewModels\PostCreateBindModel.cs" />
     <Compile Include="ViewModels\PostViewModel.cs" />
@@ -229,7 +230,7 @@
     <Compile Include="Controllers\FunnyCodesController.cs" />
     <Compile Include="Controllers\FunnyPicturesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\JokesController.cs" />
+    <Compile Include="Controllers\PostsController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\TrainersQuotesController.cs" />
     <Compile Include="Global.asax.cs">
@@ -327,7 +328,6 @@
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Users\AddFriend.cshtml" />
     <Content Include="Views\Users\AcceptFriendRequest.cshtml" />
-    <Content Include="Views\CommentsApi\Comments.cshtml" />
     <Content Include="Views\Comments\Comments.cshtml" />
     <Content Include="Views\Users\TopUsers.cshtml" />
     <Content Include="Views\Users\GetFriends.cshtml" />
@@ -336,8 +336,8 @@
     <Content Include="Views\Messages\FromUser.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\MessageViewModel.cshtml" />
     <Content Include="Views\Comments\_CommentsDetailsPartial.cshtml" />
-    <Content Include="Views\Shared\AllCategoriesView.cshtml" />
     <Content Include="Views\Shared\CreatePostView.cshtml" />
+    <Content Include="Views\Posts\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
