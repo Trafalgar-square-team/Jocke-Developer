@@ -63,6 +63,12 @@
             entry.State = EntityState.Modified;
         }
 
+        public void UpdateById(string id, T item)
+        {
+            var entity = this.GetById(id);
+            SaveChanges();
+        }
+
         public virtual void Delete(T entity)
         {
             DbEntityEntry entry = this.Context.Entry(entity);
