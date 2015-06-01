@@ -11,7 +11,6 @@
         public TrafalgarSquareDbContext()
             : base("TrafalgarSquare", throwIfV1Schema: false)
         {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<TrafalgarSquareDbContext, Configuration>());
         }
 
         public virtual IDbSet<Notification> Notifications { get; set; }
@@ -43,6 +42,7 @@
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<TrafalgarSquareDbContext, Configuration>());
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
 
             // User's Friends
