@@ -10,6 +10,7 @@
     using TrafalgarSquare.Models;
     using TrafalgarSquare.Web.ViewModels;
     using TrafalgarSquare.Web.ViewModels.User;
+    using System.Threading;
 
     public class UsersController : BaseController
     {
@@ -334,6 +335,17 @@
             }
 
             return user;
+        }
+
+        public ActionResult IsNameTaken(string username)
+        {
+            Thread.Sleep(3000);
+            var users = this.Data
+                .Users
+                .All()
+                .Where(x => x.UserName == username);
+
+            return Json(!users.Any());
         }
     }
 }
