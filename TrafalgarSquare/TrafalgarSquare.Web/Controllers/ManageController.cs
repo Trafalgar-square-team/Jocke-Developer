@@ -41,7 +41,7 @@ namespace TrafalgarSquare.Web.Controllers
         {
             var user = this.UserProfile;
             user.AvatarUrl = model.AvatarUrl;
-            this.Data.Users.UpdateById(user.Id, user);
+            this.Data.Users.Update(user);
 
             return RedirectToAction("Index", "Users", new { user.UserName });
         }
@@ -57,9 +57,9 @@ namespace TrafalgarSquare.Web.Controllers
         {
             var user = this.UserProfile;
             user.Email = model.Email;
-            this.Data.Users.UpdateById(user.Id, user);
+            this.Data.Users.Update(user);
 
-            return RedirectToAction("Index", "Users", new { user.UserName });
+            return this.RedirectToAction("Index", "Users", new { user.UserName });
         }
 
 

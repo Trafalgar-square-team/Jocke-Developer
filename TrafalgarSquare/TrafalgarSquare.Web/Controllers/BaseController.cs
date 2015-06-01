@@ -17,7 +17,7 @@ namespace TrafalgarSquare.Web.Controllers
     {
         public readonly int PageSize;
         private ITrafalgarSquareData data;
-        private User userProfile;  
+        private User userProfile;
 
         protected BaseController()
         {
@@ -26,24 +26,18 @@ namespace TrafalgarSquare.Web.Controllers
 
         protected BaseController(ITrafalgarSquareData data)
         {
-            Data = data;
-            ViewBag.Categories = data.Categories.All().Where(c=>!c.IsDisabled).ToList();
-            PageSize = int.Parse(WebConfigurationManager.AppSettings["PageSize"]);
-        }
-
-        protected BaseController(ITrafalgarSquareData data, User userProfile)
-            : this(data)
-        {
-            this.UserProfile = userProfile;
+            this.Data = data;
+            ViewBag.Categories = data.Categories.All().Where(c => !c.IsDisabled).ToList();
+            this.PageSize = int.Parse(WebConfigurationManager.AppSettings["PageSize"]);
         }
 
         protected ITrafalgarSquareData Data { get; set; }
-        protected User UserProfile { get; private set; }
 
+        protected User UserProfile { get; private set; }
 
         protected IEnumerable<TopPostViewModel> Top10Jokes()
         {
-            return TopJokes(10);
+            return this.TopJokes(10);
         }
 
         protected IEnumerable<TopPostViewModel> TopJokes(int showNumber)
@@ -116,7 +110,6 @@ namespace TrafalgarSquare.Web.Controllers
         [Authorize]
         public void BaseForAllCategoriesPostCreat(PostCreateBindModel post)
         {
-
             var currentUserId = User.Identity.GetUserId();
 
             var postToCreate = new Post
@@ -158,7 +151,7 @@ namespace TrafalgarSquare.Web.Controllers
 
         [Authorize]
         public void DeletePostInCategorie(int postId)
-        {   
+        {
             Data.Posts.DeleteById(postId);
             Data.Posts.SaveChanges();
         }

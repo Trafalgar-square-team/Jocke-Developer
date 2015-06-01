@@ -18,8 +18,6 @@
 
         void Update(T entity);
 
-        void UpdateById(string id, T item);
-
         void DeleteById(object id);
 
         void SaveChanges();
