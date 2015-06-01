@@ -36,6 +36,7 @@ namespace TrafalgarSquare.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+
         public ActionResult ChangeAvatar([Bind(Include = "AvatarUrl")] UserViewModel model)
         {
             var user = this.UserProfile;
@@ -44,6 +45,23 @@ namespace TrafalgarSquare.Web.Controllers
 
             return RedirectToAction("Index", "Users", new { user.UserName });
         }
+
+        public ActionResult ChangeEmail()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangeEmail([Bind(Include = "Email")] UserViewModel model)
+        {
+            var user = this.UserProfile;
+            user.Email = model.Email;
+            this.Data.Users.UpdateById(user.Id, user);
+
+            return RedirectToAction("Index", "Users", new { user.UserName });
+        }
+
 
         public ApplicationSignInManager SignInManager
         {

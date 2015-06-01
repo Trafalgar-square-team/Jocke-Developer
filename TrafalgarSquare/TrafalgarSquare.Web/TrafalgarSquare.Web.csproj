@@ -336,6 +336,7 @@
     <Content Include="Views\Shared\CreatePostView.cshtml" />
     <Content Include="Views\Posts\Index.cshtml" />
     <None Include="Views\Manage\ChangeAvatar.cshtml" />
+    <None Include="Views\Manage\ChangeEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
