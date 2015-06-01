@@ -11,10 +11,12 @@ namespace TrafalgarSquare.Web.Controllers
     using System.Web.Mvc;
     using Data;
     using ViewModels;
+    using System.Web.Routing;
 
     public abstract class BaseController : Controller
     {
         public readonly int PageSize;
+        private ITrafalgarSquareData data;
         private User userProfile;  
 
         protected BaseController()
@@ -135,6 +137,23 @@ namespace TrafalgarSquare.Web.Controllers
 
             Data.Posts.Add(postToCreate);
             Data.Posts.SaveChanges();
+        }
+
+        protected override IAsyncResult BeginExecute(RequestContext requestContext, AsyncCallback callback, object state)
+        {
+
+            if (requestContext.HttpContext.User.Identity.IsAuthenticated)
+            {
+                var userName = requestContext.HttpContext.User.Identity.Name;
+                var user = this.Data.Users.All().FirstOrDefault(x => x.UserName == userName);
+                this.UserProfile = user;
+            }
+            if (this.UserProfile == null)
+            {
+                //throw new InstanceNotFoundException("shit");
+                return base.BeginExecute(requestContext, callback, state);
+            }
+            return base.BeginExecute(requestContext, callback, state);
         }
 
         [Authorize]

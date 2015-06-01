@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using TrafalgarSquare.Web.ViewModels;
 using TrafalgarSquare.Data;
+using TrafalgarSquare.Web.ViewModels.User;
 
 namespace TrafalgarSquare.Web.Controllers
 {
@@ -16,10 +17,6 @@ namespace TrafalgarSquare.Web.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-
-        public ManageController()
-        {
-        }
 
         public ManageController(ITrafalgarSquareData data)
             : base(data)
@@ -30,6 +27,22 @@ namespace TrafalgarSquare.Web.Controllers
         {
             UserManager = userManager;
             SignInManager = signInManager;
+        }
+
+        public ActionResult ChangeAvatar()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangeAvatar([Bind(Include = "AvatarUrl")] UserViewModel model)
+        {
+            var user = this.UserProfile;
+            user.AvatarUrl = model.AvatarUrl;
+            this.Data.Users.UpdateById(user.Id, user);
+
+            return RedirectToAction("Index", "Users", new { user.UserName });
         }
 
         public ApplicationSignInManager SignInManager
