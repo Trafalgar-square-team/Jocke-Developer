@@ -15,6 +15,13 @@ namespace TrafalgarSquare.Web.Controllers
     public abstract class BaseController : Controller
     {
         public readonly int PageSize;
+        private User userProfile;  
+
+        protected BaseController()
+        {
+        }
+
+
         protected BaseController(ITrafalgarSquareData data)
         {
             Data = data;
@@ -22,11 +29,15 @@ namespace TrafalgarSquare.Web.Controllers
             PageSize = int.Parse(WebConfigurationManager.AppSettings["PageSize"]);
         }
 
-        protected BaseController()
+        protected BaseController(ITrafalgarSquareData data, User userProfile)
+            : this(data)
         {
+            this.UserProfile = userProfile;
         }
 
         protected ITrafalgarSquareData Data { get; set; }
+        protected User UserProfile { get; private set; }
+
 
         protected IEnumerable<TopPostViewModel> Top10Jokes()
         {
