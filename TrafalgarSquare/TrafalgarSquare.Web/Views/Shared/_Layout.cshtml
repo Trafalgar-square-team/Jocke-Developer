@@ -11,6 +11,26 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+    @Scripts.Render("~/Scripts/jquery.signalR-2.2.0.js");
+    @Scripts.Render("~/signalr/hubs");
+    <script>
+        $(document).ready(function () {
+            $.connection.hub.start();
+
+            var chat = $.connection.chat;
+            chat.client.addMessageNotification = addMessageNotification;
+            chat.client.addNotification = addNotification;
+        });
+
+        function addMessageNotification() {
+            $('#global-unseen-messages-count').text(parseInt($('#global-unseen-messages-count').text()) + 1);
+        }
+
+        function addNotification() {
+            $('#global-notifications-count').text(parseInt($('#global-notifications-count').text()) + 1);
+        }
+    </script>
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">

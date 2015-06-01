@@ -1,0 +1,12 @@
+﻿@model TrafalgarSquare.Web.ViewModels.NotificationViewModel
+
+<li data-notification-id="@Model.Id" @{if (!@Model.IsSeen) { @: class="unseen-notification"
+                                         }}>
+    <div class="col-md-2">
+        <img class="image-left-small-box" src="@Model.Sender.AvatarUrl" alt="avatar-@Model.Sender.Username">
+    </div>
+    <p>@Html.Raw(Model.Text)</p>
+<time>@Model.SendDateTime</time>
+</li>
+
+

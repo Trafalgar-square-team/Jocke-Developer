@@ -151,3 +151,12 @@ select {
 .selectedChatUser {
    background-color:  #93c54b;
 }
+
+.unseen-notification {
+    background-color: orangered;
+}
+
+#notificationsUl >li {
+    margin: 1% 0;
+    list-style: none;
+}

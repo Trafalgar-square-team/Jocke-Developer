@@ -57,6 +57,12 @@
                 .WithRequired(x => x.Sender)
                 .HasForeignKey(x => x.SenderId);
 
+            // Notifications
+            modelBuilder.Entity<User>()
+                .HasMany(x => x.Notifications)
+                .WithRequired(x => x.Recepient)
+                .HasForeignKey(x => x.RecepientId);
+
             // User's Posts
             modelBuilder.Entity<User>()
                 .HasMany(x => x.Posts)

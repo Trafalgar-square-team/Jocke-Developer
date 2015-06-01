@@ -1,24 +1,6 @@
 ﻿@model IEnumerable<TrafalgarSquare.Web.ViewModels.User.ChatFriendViewModel>
 <div>
     <div class="col-md-9">
-        @*<div>
-                <div>
-                    Current rooms:
-                </div>
-            </div>
-            <div>
-                <input type="text" id="room" value="Room" />
-                <button id="join-room">Join</button>
-                <br />
-                <input type="text" id="message" value="message" />
-                <button id="send-message">Send</button>
-                <br />
-                <input type="text" id="room-message" value="message" />
-                <button id="send-message-to-room">Send To Rooms Only</button>
-                <br />
-                <input type="text" id="personal-message" value="message" />
-                    <button id="send-message-to-person">Send To Person</button>
-            </div>*@
         <div class="row">
             <h2><a href=""></a></h2>
         </div>
@@ -31,13 +13,13 @@
         </div>
     </div>
     <div class="col-md-3">
+        <h2>Friends:</h2>
         @if (!@Model.Any())
         {
-            <p>You don't have friends for send message.</p>
+            <p>You don't have friends to send message.</p>
         }
         else
         {
-            <h2>Friends:</h2>
             <ul class="list-group chatUsersUl">
                 @Html.DisplayFor(z => z)
             </ul>
@@ -62,9 +44,8 @@
                 $('#messages').html(data);
                 var scrollHeight = $('#messages')[0].scrollHeight;
                 $('#messages').scrollTop(scrollHeight);
-                //console.log($('#unseen-messages-' + userId).text(0));
+                $('#global-unseen-messages-count').text(parseInt($('#global-unseen-messages-count').text()) - parseInt($('#unseen-messages-' + userId).text()));
                 $('#unseen-messages-' + userId).text(0);
-                //$('#unseen-messages-' + userId)[0].val(0);
             }).error(function (error) {
 
             });
@@ -87,32 +68,10 @@
 
             var chat = $.connection.chat;
 
-            $('#send-message').click(function () {
-
-                var msg = $('#message').val();
-
-                chat.server.sendMessage(msg);
-            });
-
-            $("#join-room").click(function () {
-
-                var room = $('#room').val();
-
-                chat.server.joinRoom(room);
-            });
-
-            $('#send-message-to-room').click(function () {
-
-                var msg = $('#room-message').val();
-
-                chat.server.sendMessageToRoom(msg, rooms);
-            });
-
             $('#send-message-button').click(function () {
                 var msg = $('#personal-message').val();
                 if (userId) {
                     chat.server.sendPersonMessage(userId, msg);
-                    //console.log(userId);
                     getAllMessages();
                     $('#personal-message').val('');
                 } else {
@@ -122,7 +81,6 @@
 
 
             chat.client.addMessage = addMessage;
-            chat.client.joinRoom = joinRoom;
         });
 
         function addMessage(message) {
@@ -135,15 +93,7 @@
                     notificationsCount = parseInt(notificationsCount);
                     $('#unseen-messages-' + newMessage.userId).text(notificationsCount + 1);
                 }
-
-                // TODO add global notification!!!
             }
-            //$('#messages').append('<div>' + message + '</div>');
-        }
-
-        function joinRoom(room) {
-            rooms.push(room);
-            $('#currentRooms').append('<div>' + room + '</div>');
         }
     </script>
 }

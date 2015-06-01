@@ -6,10 +6,11 @@
     using System.Web;
     using System.Web.Mvc;
     using Data;
+    using Hubs;
     using Microsoft.AspNet.Identity;
-    using TrafalgarSquare.Models;
-    using TrafalgarSquare.Web.ViewModels;
-    using TrafalgarSquare.Web.ViewModels.User;
+    using Microsoft.AspNet.SignalR;
+    using Models;
+    using ViewModels.User;
     using System.Threading;
 
     public class UsersController : BaseController
@@ -19,7 +20,7 @@
         {
         }
 
-        [Authorize]
+        [System.Web.Mvc.Authorize]
         public ActionResult Index(string username)
         {
             var user = this.UserProfileData(username);
@@ -27,7 +28,7 @@
             return this.View(user);
         }
 
-        [Authorize]
+        [System.Web.Mvc.Authorize]
         public ActionResult TopUsers(int? showNumber)
         {
             if (showNumber == null)
@@ -35,32 +36,46 @@
                 showNumber = 10;
             }
 
-            var users = this.Data.Users
-                .All()
-                .GroupJoin(
-                    this.Data.PostsLikes.All(),
-                    x => x.Id,
-                    postLikes => postLikes.Post.PostOwnerId,
-                    (user, postLikes) => new
-                    {
-                        user = user,
-                        postLikes = postLikes.Count()
-                    })
-                .OrderByDescending(x => x.postLikes)
-                .ThenBy(x => x.user.UserName)
-                .Take((int)showNumber)
-                .Select(x => new TopUserViewModel()
-                {
-                    Id = x.user.Id,
-                    AvatarUrl = x.user.AvatarUrl,
-                    Username = x.user.UserName,
-                    TotalLikes = x.postLikes
-                }).ToList();
+            //var users = this.Data.Users
+            //   .All()
+            //   .GroupJoin(
+            //       this.Data.PostsLikes.All(),
+            //       x => x.Id,
+            //       postLikes => postLikes.Post.PostOwnerId,
+            //       (user, postLikes) => new
+            //       {
+            //           user = user,
+            //           postLikes = postLikes.Count()
+            //       })
+            //   .OrderByDescending(x => x.postLikes)
+            //   .ThenBy(x => x.user.UserName)
+            //   .Take((int)showNumber)
+            //   .Select(x => new TopUserViewModel()
+            //   {
+            //       Id = x.user.Id,
+            //       AvatarUrl = x.user.AvatarUrl,
+            //       Username = x.user.UserName,
+            //       TotalLikes = x.postLikes,
+            //   }).ToList();
 
-            return this.View(users);
+            var usersWithRank = this.Data.Users.All()
+                .GroupBy(z => z.Posts.SelectMany(x => x.LikesPost).Count())
+                .OrderByDescending(z => z.Key)
+                .AsEnumerable()
+                .SelectMany((grouping, i) => grouping.Select(s => new TopUserViewModel()
+                {
+                    Id = s.Id,
+                    AvatarUrl = s.AvatarUrl,
+                    Username = s.UserName,
+                    Rank = i + 1,
+                    TotalLikes = grouping.Key
+                }))
+                .ToList();
+
+            return this.View(usersWithRank);
         }
 
-        [Authorize]
+        [System.Web.Mvc.Authorize]
         [HttpPost]
         public ActionResult AddFriend(string id)
         {
@@ -102,11 +117,13 @@
             }
 
             Notification model;
+            var theChat = GlobalHost.ConnectionManager.GetHubContext<Chat>();
 
             // Send Friend Request.
             var frinedRequest = this.Data.UsersFriends
                 .All()
                 .FirstOrDefault(x => (x.UserId == friendToAdd.Id && x.FriendId == adderUserId));
+
             if (frinedRequest != null)
             {
                 if (frinedRequest.IsAccepted == false)
@@ -115,19 +132,35 @@
                     model = new Notification()
                     {
                         RecepientId = adderUserId,
-                        Text = "Your friend request is waiting acceptance.",
-                        SendDateTime = DateTime.Now
+                        Text = string.Format("You sent friend request to {0}. It is waiting acceptance.", friendToAdd.UserName),
+                        SendDateTime = DateTime.Now,
+                        SenderId = adderUserId,
+                        IsSeen = false
                     };
                 }
                 else
                 {
-                    // TODO use SignalR To send notifiacation (to Current User)
+                    // TODO use SignalR To send notifiacation  (to Current and Friend User)
                     model = new Notification()
                     {
                         RecepientId = adderUserId,
                         Text = string.Format("You are now friends with {0}", friendToAdd.UserName),
-                        SendDateTime = DateTime.Now
+                        SendDateTime = DateTime.Now,
+                        IsSeen = false,
+                        SenderId = friendToAdd.Id
                     };
+
+                    var not = new Notification()
+                      {
+                          RecepientId = friendToAdd.Id,
+                          Text = string.Format("You are now friends with {0}", User.Identity.GetUserName()),
+                          SendDateTime = DateTime.Now,
+                          IsSeen = false,
+                          SenderId = adderUserId
+                      };
+
+                    this.Data.Notifications.Add(not);
+                    theChat.Clients.User(model.SenderId).addNotification();
                 }
             }
             else
@@ -143,17 +176,23 @@
                 // TODO use SignalR To send notifiacation  (to Current and Friend User)
                 model = new Notification()
                 {
-                    RecepientId = adderUserId,
-                    Text = string.Format("Friend request sent to: {0}", friendToAdd.UserName),
-                    SendDateTime = DateTime.Now
+                    RecepientId = friendToAdd.Id,
+                    Text = string.Format("You have friend request from <a href='/User/Profile/{0}'>{0}</a>", User.Identity.GetUserName()),
+                    SendDateTime = DateTime.Now,
+                    SenderId = adderUserId,
+                    IsSeen = false
                 };
             }
 
+            theChat.Clients.User(model.RecepientId).addNotification();
+
+            this.Data.Notifications.Add(model);
             this.Data.SaveChanges();
+            return new HttpStatusCodeResult(200);
             return this.PartialView(model);
         }
 
-        [Authorize]
+        [System.Web.Mvc.Authorize]
         public ActionResult AcceptFriendRequest(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -204,7 +243,7 @@
             return this.View();
         }
 
-        [Authorize]
+        [System.Web.Mvc.Authorize]
         public ActionResult RemoveFriend(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -238,7 +277,7 @@
             return new EmptyResult();
         }
 
-        [Authorize]
+        [System.Web.Mvc.Authorize]
         public ActionResult GetFriends(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -282,7 +321,7 @@
             return this.View(friends);
         }
 
-        [Authorize]
+        [System.Web.Mvc.Authorize]
         public JsonResult GetFriendStatus(string id)
         {
             var user = this.UserProfileData(id);

@@ -5,6 +5,7 @@
     using System.Web.Mvc;
     using Data;
     using ViewModels;
+    using Microsoft.AspNet.Identity;
 
     public class HomeController : BaseController
     {
@@ -70,6 +71,26 @@
         public ActionResult PartialTop10Jokes()
         {
             return this.PartialView("Partials/_Top10PostsPartial", this.Top10Jokes());
+        }
+
+        [Authorize]
+        public int GlobalUnseenMessagesCount()
+        {
+            var userId = User.Identity.GetUserId();
+            var unseenMessagesCount = this.Data.Messages
+                .All()
+                .Count(x => x.RecepientId == userId && x.IsSeen == false);
+            return unseenMessagesCount;
+        }
+
+        [Authorize]
+        public int GlobalUnseenNotificationsCount()
+        {
+            var userId = User.Identity.GetUserId();
+            var unseenNotificationsCount = this.Data.Notifications
+                .All()
+                .Count(x => x.RecepientId == userId && x.IsSeen == false);
+            return unseenNotificationsCount;
         }
     }
 }

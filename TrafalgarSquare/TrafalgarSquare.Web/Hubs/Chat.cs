@@ -1,19 +1,14 @@
-﻿
-
-
-using Microsoft.Ajax.Utilities;
-using Newtonsoft.Json;
-using TrafalgarSquare.Models;
-
-namespace TrafalgarSquare.Web.Hubs
+﻿namespace TrafalgarSquare.Web.Hubs
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Web;
-    using Microsoft.AspNet.SignalR;
+    using Data;
     using Microsoft.AspNet.Identity;
-    using TrafalgarSquare.Data;
+    using Microsoft.AspNet.SignalR;
+    using Models;
+    using Newtonsoft.Json;
 
 
     public class Chat : Hub
@@ -43,23 +38,44 @@ namespace TrafalgarSquare.Web.Hubs
             // Clients.User(userId).addMessage(message);
             var user = Context.User;
             var senderId = user.Identity.GetUserId();
+            var sender = this.Data.Users.All().FirstOrDefault(x => x.Id == senderId);
 
-            Clients.User(userId).addMessage(JsonConvert.SerializeObject(new 
+            // TODO: Check if recipient is Friend and then send message
+            var isSenderFriend = this.Data.UsersFriends
+                .All()
+                .Count(x => (x.UserId == userId && x.Friend.Id == senderId && x.IsAccepted == true) ||
+                            (x.User.Id == senderId && x.Friend.Id == userId && x.IsAccepted == true)) == 2;
+            if (isSenderFriend)
             {
-                userId = senderId,
-                message
-            }));
+                Clients.User(userId).addMessage(JsonConvert.SerializeObject(new
+                {
+                    userId = senderId,
+                    message
+                }));
 
-            this.Data.Messages.Add(new Message()
+                Clients.User(userId).addMessageNotification();
+
+                this.Data.Messages.Add(new Message()
+                {
+                    RecepientId = userId,
+                    SenderId = senderId,
+                    IsSeen = false,
+                    Text = message,
+                    SendDateTime = DateTime.Now,
+                });
+
+                this.Data.SaveChanges();
+            }
+            else
             {
-                RecepientId = userId,
-                SenderId = senderId,
-                IsSeen = false,
-                Text = message,
-                SendDateTime = DateTime.Now,
-            });
+                //Clients.User(senderId).invalidRecipient();
+            }
+        }
 
-            this.Data.SaveChanges();
+        [Authorize]
+        public void SendPersonalNotifications(string userId)
+        {
+            Clients.User(userId).addNotification();
         }
 
         public void SendMessage(string message)

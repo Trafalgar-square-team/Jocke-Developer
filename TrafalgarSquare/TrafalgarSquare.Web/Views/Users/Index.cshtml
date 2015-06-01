@@ -10,7 +10,7 @@
         else
         {
             //default Avatar
-            <img src="http://gravatar.com/avatar/658f2039885a85cc03cc31e20919bed6?s=512" alt="avatar-@Model.Username" style="max-width: 100%" />
+            <img src="@Model.AvatarUrl" alt="avatar-@Model.Username" style="max-width: 100%" />
         }
     </div>
     <div class="col-md-4">
@@ -111,7 +111,7 @@
 
                             $("#addFriendButton").removeClass("displayBlock");
                             $("#addFriendButton").addClass("displayNone");
-
+                            
                         } else if (!user.IsViewerFriend && user.IsViewerWaitingAcceptance) {
                             $("#myFriendStatusDiv").removeClass("displayNone");
                             $("#myFriendStatusDiv").addClass("displayBlock");

@@ -24,7 +24,7 @@
         {
             var userId = User.Identity.GetUserId();
             var usersFriends = this.Data.UsersFriends.All()
-                .Where(x => x.UserId == userId && x.IsAccepted == true)
+                .Where(x => x.UserId == userId && x.IsAccepted == true && x.Friend.Friends.Any(z => z.FriendId == userId && z.IsAccepted == true))
                 .Select(x => new ChatFriendViewModel()
                 {
                     Id = x.FriendId,

@@ -1,0 +1,38 @@
+﻿@model IEnumerable<TrafalgarSquare.Web.ViewModels.NotificationViewModel>
+
+<h2>Your Notifications:</h2>
+
+@if (Model.Any())
+{
+    <p>Click on Notification to mark it is as read...</p>
+    <ul id="notificationsUl">
+        @Html.DisplayFor(x => x)
+    </ul>
+}
+else
+{
+    <p>You don't have notifications.</p>
+}
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('.unseen-notification').click(function () {
+                var $this = this;
+                var notificationId = $(this).data('notification-id');
+                $.ajax({
+                    type: "POST",
+                    url: '/Notifications/MarkNotificationAsRead/',
+                    data: { id: notificationId }
+                }).success(function (data) {
+                    $('#global-notifications-count').text(parseInt($('#global-notifications-count').text()) - 1);
+                    $($this).removeClass('unseen-notification');
+                });
+            }).error(function (error) {
+                // TODO: Display exception message
+            });
+        });
+
+    </script>
+}

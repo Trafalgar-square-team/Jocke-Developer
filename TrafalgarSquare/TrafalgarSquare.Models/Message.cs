@@ -18,9 +18,9 @@
         [ForeignKey("Sender")]
         public string SenderId { get; set; }
 
-        public DateTime SendDateTime { get; set; }
-
         public virtual User Sender { get; set; }
+
+        public DateTime SendDateTime { get; set; }
 
         [Required]
         public string RecepientId { get; set; }

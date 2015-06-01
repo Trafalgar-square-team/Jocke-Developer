@@ -19,6 +19,14 @@
 
         public virtual User Recepient { get; set; }
 
+        [Required]
+        [ForeignKey("Sender")]
+        public string SenderId { get; set; }
+
+        public virtual User Sender { get; set; }
+
         public DateTime SendDateTime { get; set; }
+
+        public bool IsSeen { get; set; }
     }
 }

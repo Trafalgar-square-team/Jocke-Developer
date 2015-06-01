@@ -17,5 +17,7 @@ namespace TrafalgarSquare.Web.ViewModels.User
         public string AvatarUrl { get; set; }
 
         public int TotalLikes { get; set; }
+
+        public int Rank { get; set; }
     }
 }

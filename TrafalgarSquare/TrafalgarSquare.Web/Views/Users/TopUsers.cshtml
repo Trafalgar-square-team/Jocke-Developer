@@ -1,47 +1,42 @@
 ﻿@model IEnumerable<TrafalgarSquare.Web.ViewModels.User.TopUserViewModel>
 
 @{
-ViewBag.Title = "Top Users";
+    ViewBag.Title = "Top Users";
 }
 
 <div id="wrapper">
-
-                        <div class="panel panel-default">
-                            <div class="panel-body text-muted">
-                                Categorie / Top Users
-                            </div>
-                        </div>
-
-                        <h1 class="text-warning">Our Top Users</h1>
-                        <hr/>
-
-                        <table class="table table-striped table-hover ">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Pic</th>
-                                    <th>User Name</th>
-                                    <th>Total Likes</th>
-                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                            @{
-            var i = 1;
-            foreach (var user in Model)
-            {
-                                <tr>
-                                    <td>@i</td>
-                                    <td><img src="@user.AvatarUrl" width="30" alt="avatar-@user.Username"></td>
-                                    <td>@user.Username</td>
-                                    <td>@user.TotalLikes</td>
-                                </tr>
-                               
-                       i++;
-                    }
+    <div class="panel panel-default">
+        <div class="panel-body text-muted">
+            Categorie / Top Users
+        </div>
+    </div>
+    <h1 class="text-warning">Our Top Users</h1>
+    <hr />
+    <table class="table table-striped table-hover ">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Pic</th>
+                <th>User Name</th>
+                <th>Total Likes</th>
+                <th>Rank</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var i = 1;
+                foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td><img src="@user.AvatarUrl" width="30" alt="avatar-@user.Username"></td>
+                        <td><a href="/User/Profile/@user.Username">@user.Username</a></td>
+                        <td>@user.TotalLikes</td>
+                        <td>@user.Rank</td>
+                    </tr>
+                    i++;
                 }
-
-                            </tbody>
-                        </table>
-
-                    </div> <!-- wrapper end tag -->
+            }
+        </tbody>
+    </table>
+</div> 

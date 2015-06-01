@@ -3,19 +3,22 @@
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
-    @Html.AntiForgeryToken()
+        @Html.AntiForgeryToken()
 
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-            @Html.ActionLink(" Hi, " + User.Identity.GetUserName(), "Index", "Manage", routeValues: null, htmlAttributes: new {title = "Manage", @class = "glyphicon glyphicon-user"})
-        </li>
-        <li>
-            <a href="/Messages/index" class="glyphicon glyphicon-envelope"> (0) Messages</a>
-        </li>
-        <li>
-            <a href="javascript:document.getElementById('logoutForm').submit()" class="glyphicon glyphicon-off"> Log off</a>
-        </li>
-    </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                @Html.ActionLink(" Hi, " + User.Identity.GetUserName(), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "glyphicon glyphicon-user" })
+            </li>
+            <li>
+                <a href="/Notifications/index" class="glyphicon glyphicon glyphicon-bell"> (<span id="global-notifications-count">@Html.Action("GlobalUnseenNotificationsCount", "Home")</span>) Notifications</a>
+            </li>
+            <li>
+                <a href="/Messages/index" class="glyphicon glyphicon-envelope"> (<span id="global-unseen-messages-count">@Html.Action("GlobalUnseenMessagesCount", "Home")</span>) Messages</a>
+            </li>
+            <li>
+                <a href="javascript:document.getElementById('logoutForm').submit()" class="glyphicon glyphicon-off"> Log off</a>
+            </li>
+        </ul>
     }
 }
 else
