@@ -344,12 +344,9 @@
     <None Include="Views\Manage\ChangeEmail.cshtml" />
     <Content Include="Views\Notifications\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\NotificationViewModel.cshtml" />
-<<<<<<< HEAD
-    <Content Include="Views\Manage\ChangeGender.cshtml" />
-=======
-    <Content Include="Views\Posts\CreatePost.cshtml" />
-    <Content Include="Views\Posts\PostById.cshtml" />
->>>>>>> b1818e3b9dfc75954d1da12ee85e2081d4e10bc9
+	<Content Include="Views\Manage\ChangeGender.cshtml" />
+	<Content Include="Views\Posts\CreatePost.cshtml" />
+	<Content Include="Views\Posts\PostById.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
