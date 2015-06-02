@@ -1,0 +1,47 @@
+﻿@model TrafalgarSquare.Web.ViewModels.PostCreateBindModel
+@{
+    ViewBag.TitlePage = "Create new Post in " + @TempData["categorieName"] + " categore:";
+}
+
+<div id="wrapper">
+
+    <h2>@ViewBag.TitlePage</h2>
+
+    @using (Html.BeginForm("PostCreate", "Categories", FormMethod.Post))
+    {
+        @*
+            @Html.AntiForgeryToken()
+        *@
+
+        <div>
+            @Html.Label("Title")
+            @Html.TextBox("Title")
+        </div>
+
+        <div>
+            @Html.Label("Text")
+            @Html.TextBox("Text")
+        </div>
+        <br /><br />
+        <p>Choose and paste url link in only one inpute before submit: <strong>Video Resource is only for Thee Trainer Quotes category!!!</strong> </p>
+        <p><strong>TODO:</strong> implemet validation and dropdown list)</p>
+
+        <div>
+            @Html.Label("Resource Url")
+            @Html.TextBox("Resource")
+        </div>
+
+        <div>
+            @Html.Label("isVideo")
+            @Html.CheckBox("isVideo")
+        </div>
+
+        //TODO: Drop Down List  for Resource Image or Resource Video
+
+        <div>
+            <input id="CategoryId" type="hidden" value=@TempData["CategoryId"] name="CategoryId">
+        </div>
+
+        <input type="submit" />
+    }
+</div>
