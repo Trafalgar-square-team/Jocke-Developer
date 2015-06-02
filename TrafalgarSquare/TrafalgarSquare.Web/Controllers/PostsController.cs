@@ -4,6 +4,7 @@ namespace TrafalgarSquare.Web.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Web.Mvc;
     using Data;
     using Microsoft.AspNet.Identity;
@@ -64,46 +65,97 @@ namespace TrafalgarSquare.Web.Controllers
 
         [Authorize]
         [HttpGet]
-        [Route("posts/{categoryMachineName}/add")]
-        public ActionResult CreatePost(string categoryMachineName)
+        [Route("post/create")]
+        public ActionResult CreatePost()
         {
-            var category = GetCategoryByMachineName(categoryMachineName);
-            if (category == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
-            ViewBag.Title = category.Name;
+            ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c=>!c.IsDisabled), "Id", "Name");
             return View();
         }
 
-        [Authorize]
         [HttpPost]
-        [Route("post/add")]
-        public ActionResult CreatePost(PostCreateBindModel post)
+        [ValidateAntiForgeryToken]
+        [Route("post/create")]
+        public ActionResult CreatePost([Bind(Include = "Id,Title,Text,Resource,CategoryId,CreatedDateTime,IsReported")] Post post)
         {
-            var currentUserId = User.Identity.GetUserId();
-
-            var newPost = new Post
+            if (ModelState.IsValid)
             {
-                Text = post.Text,
-                Title = post.Title,
+                post.PostOwnerId = User.Identity.GetUserId();
+                Data.Posts.Add(post);
+                Data.SaveChanges();
+                return RedirectToAction("Index");
+            }
 
-                Resource = new PostResources()
+            ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c => !c.IsDisabled), "Id", "Name", post.CategoryId);
+            return View(post);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("post/edit/{id}")]
+        public ActionResult EditPost(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var post = Data.Posts.GetById(id);
+            if (post == null || post.PostOwnerId != User.Identity.GetUserId())
+            {
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c => !c.IsDisabled), "Id", "Name", post.CategoryId);
+            return View(post);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditPost([Bind(Include = "Id,Title,Text,Resource,CategoryId,CreatedDateTime,IsReported")] Post post)
+        {
+            if (ModelState.IsValid)
+            {
+                if (post.PostOwnerId != User.Identity.GetUserId())
                 {
-                    VideoUrl = post.Resource
-                },
+                    return RedirectToAction("Index");
+                }
 
-                PostOwnerId = currentUserId,
-                CreatedDateTime = DateTime.Now,
-                CategoryId = post.CategoryId
+                Data.Posts.Update(post);
+                Data.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c => !c.IsDisabled), "Id", "Name", post.CategoryId);
+            return View(post);
+        }
 
-            };
+        [Route("post/delete/{id}")]
+        public ActionResult DeletePost(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var post = Data.Posts.GetById(id);
+            if (post == null || post.PostOwnerId != User.Identity.GetUserId())
+            {
+                return RedirectToAction("Index");
+            }
+            return View(post);
+        }
 
-            Data.Posts.Add(newPost);
-            Data.Posts.SaveChanges();
+        [HttpPost]
+        [Route("post/delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeletePostConfirmed(int id)
+        {
+            var post = Data.Posts.GetById(id);
+            if (post == null || post.PostOwnerId != User.Identity.GetUserId())
+            {
+                return RedirectToAction("Index");
+            }
 
-            return View(newPost);
+            Data.Posts.DeleteById(id);
+            Data.SaveChanges();
+            return RedirectToAction("Index");
         }
 
 

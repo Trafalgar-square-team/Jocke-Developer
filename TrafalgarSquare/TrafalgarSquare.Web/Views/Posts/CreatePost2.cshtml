@@ -1,0 +1,32 @@
+﻿@model TrafalgarSquare.Web.ViewModels.PostCreateBindModel
+
+<div id="wrapper">
+
+    <h2>@ViewBag.TitlePage</h2>
+
+    @using (Html.BeginForm("CreatePost", "Posts", FormMethod.Post))
+    {
+        
+        @Model.Text
+        @Model.Resource
+        @Model.Title
+        
+        <div>
+            @Html.Label("Resource Url")
+            @Html.TextBox("Resource")
+        </div>
+
+        <div>
+            @Html.Label("isVideo")
+            @Html.CheckBox("isVideo")
+        </div>
+
+        //TODO: Drop Down List  for Resource Image or Resource Video
+
+        <div>
+            <input id="CategoryId" type="hidden" value=@TempData["CategoryId"] name="CategoryId">
+        </div>
+
+        <input type="submit" />
+    }
+</div>
