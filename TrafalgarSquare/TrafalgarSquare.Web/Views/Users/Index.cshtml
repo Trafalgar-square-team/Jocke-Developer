@@ -1,7 +1,7 @@
 ﻿@model TrafalgarSquare.Web.ViewModels.User.UserProfileViewModel
 
 <div class="row">
-    <h2>@Model.Username</h2>
+    <h2>&nbsp;&nbsp;@Model.Username</h2>
     <div class="col-md-2">
         @if (!string.IsNullOrEmpty(Model.AvatarUrl))
         {
@@ -17,7 +17,7 @@
         <p>Username: @Model.Username</p>
         <p>Email: @Model.Email</p>
         <p>
-            City:@if (Model.City != null)
+            City: @if (Model.City != null)
             {
                 @Model.City
             }

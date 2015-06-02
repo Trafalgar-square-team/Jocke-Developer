@@ -29,6 +29,22 @@ namespace TrafalgarSquare.Web.Controllers
             SignInManager = signInManager;
         }
 
+        public ActionResult ChangeGender()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangeGender([Bind(Include = "Gender")] UserViewModel model)
+        {
+            var user = this.UserProfile;
+            user.Gender = model.Gender;
+            this.Data.Users.Update(user);
+
+            return RedirectToAction("Index", "Users", new { user.UserName });
+        }
+
         public ActionResult ChangeBirthday()
         {
             return View();
