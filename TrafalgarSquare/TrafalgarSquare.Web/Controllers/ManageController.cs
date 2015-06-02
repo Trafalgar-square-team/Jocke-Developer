@@ -29,6 +29,38 @@ namespace TrafalgarSquare.Web.Controllers
             SignInManager = signInManager;
         }
 
+        public ActionResult ChangeBirthday()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangeBirthday([Bind(Include = "Birthday")] UserViewModel model)
+        {
+            var user = this.UserProfile;
+            user.Birthday = model.Birthday;
+            this.Data.Users.Update(user);
+
+            return RedirectToAction("Index", "Users", new { user.UserName });
+        }
+
+        public ActionResult ChangeCity()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangeCity([Bind(Include = "City")] UserViewModel model)
+        {
+            var user = this.UserProfile;
+            user.City = model.City;
+            this.Data.Users.Update(user);
+
+            return RedirectToAction("Index", "Users", new { user.UserName });
+        }
+
         public ActionResult ChangeAvatar()
         {
             return View();

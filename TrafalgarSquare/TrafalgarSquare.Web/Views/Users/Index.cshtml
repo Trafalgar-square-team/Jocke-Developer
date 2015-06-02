@@ -26,18 +26,34 @@
                 @:-
             }
         </p>
-        <p>Birthday: @Model.Birthday</p>
+        <p>
+            Birthday: @if (@Model.Birthday != null)
+            {
+                @: @Model.Birthday.Value.ToString("dd.MM.yyyy")
+                     }
+            else
+            {
+                @: -
+                     }
+        </p>
         <p>
             Age: @if (Model.Birthday != null)
             {
-                TimeSpan ts = DateTime.Now - (DateTime)Model.Birthday;
-                DateTime Age = DateTime.MinValue.AddDays(ts.Days);
-                @: @string.Format(" {0} Years {1} Month {2} Days", Age.Year - 1, Age.Month - 1, Age.Day - 1)
-                 }
+                if (Model.Birthday <= DateTime.Now)
+                {
+                    TimeSpan ts = DateTime.Now - (DateTime)Model.Birthday;
+                    DateTime Age = DateTime.MinValue.AddDays(ts.Days);
+                    @: @string.Format(" {0} Years {1} Month {2} Days", Age.Year - 1, Age.Month - 1, Age.Day - 1)
+                }
+                else
+                {
+                    @: Hello, time traveler!
+                }
+            }
             else
             {
                 @:-
-                 }
+            }
         </p>
         <p>Gender: @Model.Gender</p>
         <p>Register date: @string.Format("{0:dd MMMM yyyy}", Model.RegisterDate)</p>
@@ -111,7 +127,7 @@
 
                             $("#addFriendButton").removeClass("displayBlock");
                             $("#addFriendButton").addClass("displayNone");
-                            
+
                         } else if (!user.IsViewerFriend && user.IsViewerWaitingAcceptance) {
                             $("#myFriendStatusDiv").removeClass("displayNone");
                             $("#myFriendStatusDiv").addClass("displayBlock");

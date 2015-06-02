@@ -2,6 +2,7 @@
 {
     using Automapper;
     using Models;
+    using System;
 
     public class UserViewModel : IMapFrom<User>
     {
@@ -12,6 +13,10 @@
         public string AvatarUrl { get; set; }
 
         public string Email { get; set; }
+
+        public string City { get; set; }
+
+        public DateTime? Birthday { get; set; }
 
     }
 }

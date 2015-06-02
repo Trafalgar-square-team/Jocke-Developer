@@ -340,6 +340,8 @@
     <Content Include="Views\Shared\CreatePostView.cshtml" />
     <Content Include="Views\Posts\Index.cshtml" />
     <None Include="Views\Manage\ChangeAvatar.cshtml" />
+    <None Include="Views\Manage\ChangeBirthday.cshtml" />
+    <None Include="Views\Manage\ChangeCity.cshtml" />
     <None Include="Views\Manage\ChangeEmail.cshtml" />
     <Content Include="Views\Notifications\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\NotificationViewModel.cshtml" />
