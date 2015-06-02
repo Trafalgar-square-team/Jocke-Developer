@@ -16,9 +16,9 @@
 
         public Post()
         {
-            this._usersReportedPosts = new HashSet<ReportedPosts>();
-            this._likesPost = new HashSet<PostLikes>();
-            this.comments = new HashSet<Comment>();
+            _usersReportedPosts = new HashSet<ReportedPosts>();
+            _likesPost = new HashSet<PostLikes>();
+            comments = new HashSet<Comment>();
         }
 
         [Key]

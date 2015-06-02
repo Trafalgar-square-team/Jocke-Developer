@@ -13,7 +13,7 @@ namespace TrafalgarSquare.Web.Controllers
         {
         }
 
-        [Route("posts/{categoryMachineName}/{page}")]
+        [Route("posts/{categoryMachineName}/{page:int?}")]
         public ActionResult Index(string categoryMachineName, int page = 1)
         {
             page = page < 1 ? 1 : page;
