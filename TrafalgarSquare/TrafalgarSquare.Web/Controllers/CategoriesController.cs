@@ -16,20 +16,6 @@ namespace TrafalgarSquare.Web.Controllers
         {
         }
 
-        [HttpGet]
-        [Route("Categories/EditorForPosts")]
-        public ActionResult EditorPosts()
-        {
-            return this.View("CreatePostView");
-        }
-
-        [HttpPost]
-        public ActionResult PostCreate(PostCreateBindModel post)
-        {
-            base.BaseForAllCategoriesPostCreat(post);
-
-            return this.Redirect("/");
-        }
 
         [Route("Categories/DeletePost/{postId}")]
         public ActionResult DeletePost(int postId)
