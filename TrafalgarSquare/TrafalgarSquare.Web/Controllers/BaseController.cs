@@ -69,7 +69,68 @@ namespace TrafalgarSquare.Web.Controllers
             return topJokes;
         }
 
-        
+        public IEnumerable<PostViewModel> GetPostsByCategory(int categoryId, int page)
+        {
+
+            var getPageFromDb = ((page - 1) * PageSize);
+
+            if (getPageFromDb < 0)
+            {
+                getPageFromDb = 1;
+            }
+
+            //TODO Когато заявката иска Пост, който е извън колекцията, да се хвърля правилна грешка, иначе гърми
+            var posts = Data.Posts.All()
+                .Where(p => p.Category.Id == categoryId)
+                .OrderByDescending(p => p.CreatedDateTime)
+                .Select(p => new PostViewModel
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Text = p.Text,
+                    Resource = p.Resource,
+                    CreatedDateTime = p.CreatedDateTime,
+                    IsReported = p.IsReported ?? false,
+                    Likes = p.LikesPost.Count(),
+                    CommentsCount = p.Comments.Count(),
+                    User = new UserViewModel
+                    {
+                        Id = p.PostOwnerId,
+                        Username = p.PostOwner.UserName,
+                        AvatarUrl = p.PostOwner.AvatarUrl
+                    }
+                })
+                .Skip(getPageFromDb)
+                .Take(PageSize)
+                .ToList();
+
+            return posts;
+        }
+
+        [Authorize]
+        public void BaseForAllCategoriesPostCreat(PostCreateBindModel post)
+        {
+            var currentUserId = User.Identity.GetUserId();
+
+            var postToCreate = new Post
+            {
+                Text = post.Text,
+                Title = post.Title,
+
+                Resource = new PostResources()
+                {
+                    VideoUrl = post.Resource
+                },
+
+                PostOwnerId = currentUserId,
+                CreatedDateTime = DateTime.Now,
+                CategoryId = post.CategoryId
+
+            };
+
+            Data.Posts.Add(postToCreate);
+            Data.Posts.SaveChanges();
+        }
 
         protected override IAsyncResult BeginExecute(RequestContext requestContext, AsyncCallback callback, object state)
         {

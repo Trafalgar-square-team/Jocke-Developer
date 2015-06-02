@@ -19,7 +19,7 @@ namespace TrafalgarSquare.Web.ViewModels
 
         public int CategoryId { get; set; }
 
-        public bool IsVideo { get; set; }
+        public bool isVideo { get; set; }
 
 
     }

@@ -1,58 +1,69 @@
-﻿@using Microsoft.AspNet.Identity
-@using TrafalgarSquare.Web.ViewModels;
+﻿@using TrafalgarSquare.Web.ViewModels;
 @model List<PostViewModel>
+@*@{
+    //TODO По културно да се взима на категорията IDто
+    TempData["CategoryId"] = ViewBag.CategorieId;
+    TempData["CategorieNameWithOutSpaces"] = ViewBag.CategorieNameWithOutSpaces;
+    TempData["categorieName"] = ViewBag.Title;
+}*@
+
 <div id="wrapper">
 
+    @*TODO - Постовете трябва да са по един на страница и избирането на следващ трябва да става чрез бутоните Next/Previus. Трябва да се измисли начин как да се подава Id-то за следващия/предишен пост, който юзъра иска да види*@
 
-    <ol class="breadcrumb">
-        <li><a href="@Url.Action("Index", "Home")">Home</a></li>
-        <li><a href="@Url.Action("Index", "Posts", new {ViewBag.categoryMachineName })">@ViewBag.Title</a></li>
-        <li>@Model[0].Title</li>
-    </ol>
-    <div class="row well">
-        <div class="col-sm-3">
-            @if (!string.IsNullOrEmpty(@Model[0].User.AvatarUrl))
-            {
-                <div class="col-md-2">
-                    <img src="@Model[0].User.AvatarUrl" alt="@Model[0].User.Username" style="max-height: 70px"/>
-                </div>
-            }
-        </div>
-        <div class="col-sm-9">
-            <div>
-                <strong>Author: </strong><a href="#">@Model[0].User.Username</a>
-            </div>
-            <div>
-                <strong>Posted on: </strong><a href="#">@Model[0].CreatedDateTime</a>
-            </div>
-            <div>
-                <strong>Likes</strong> <span class="badge">@Model[0].Likes</span>
-            </div>
-            <small>@*Is reported: @Model[i].IsReported*@</small>
+    <div class="panel panel-default">
+        <div class="panel-body text-muted">
+            Categorie / @ViewBag.Title <a href="/Categories/EditorForPosts" class="btn btn-success btn-sm"> Make New Post in This Categorie</a>
         </div>
     </div>
-    @if (User.Identity.IsAuthenticated) {
-        <a href="/Categories/EditorForPosts" class="btn btn-success btn-md"><span class="glyphicon glyphicon-plus"></span> Create Post</a>
+
+    <h1 class="text-warning">@Model[0].Title</h1>
+    <hr />
+
+    <ul class="nav nav-pills">
+        <li class="active">
+            <a href="FunnyPictures#"><span class="glyphicon glyphicon-star"> Joke Likes</span> <span class="badge">@Model[0].Likes</span></a>
+            <a href="#"><span aria-hidden="true"></span><span class="glyphicon glyphicon-thumbs-up"> Like this joke</span></a>
+        </li>
+    </ul>
+
+    <br>
+    <br>
+
+    <p>@Model[0].Text</p>
+    <br />
+
+    <div>
+
+        @if (!string.IsNullOrEmpty(@Model[0].User.AvatarUrl))
+        {
+            <div class="col-md-2">
+                <img src="@Model[0].User.AvatarUrl" alt="@Model[0].User.Username" style="max-width: 30px" />
+            </div>
+        }
+        <strong>Author: </strong><a href="#">@Model[0].User.Username</a> <br />
+        <strong>Posted on: </strong><a href="#">@Model[0].CreatedDateTime</a>
+        <small>@*Is reported: @Model[i].IsReported*@</small>
+    </div>
+
+    <br>
+
+    <a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-bell"> Report something</span></a>
+    <a href="#" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"> Edit</span></a>
+
+
+    @*TODO Pop Up Window to confurm Delete*@
+
+    @if (@Model[0].CommentsCount == 0)
+    {
+        <a href="/Categories/DeletePost/@Model[0].Id" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"> Delete</span></a>
+    }
+    else
+    {
+        <a href="/Categories/DeletePost/@Model[0].Id" class="btn btn-danger disabled btn-xs"><span class="glyphicon glyphicon-trash"> Delete</span></a>
     }
 
-    <div class="post-box text-center well">
-        @if (User.Identity.IsAuthenticated)
-        {
-            <div class="text-right row">
-                <a href="#" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>
-                <a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-bell"></span> Report abuse</a>
-                @if (User.Identity.GetUserId() == Model[0].User.Id)
-                {
-                    <a href="#" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
-                    <a href="#" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-pencil"></span> Delete</a>
-                }
-            </div>
-
-        }
-
-        <h2 class="text-warning">@Model[0].Title</h2>
-
-        <p>@Model[0].Text</p>
+    <div class="post-box text-center">
         <br>
 
         @*==========LOADING PARTIAL CONTENT*@
@@ -76,97 +87,98 @@
 
             <iframe width="640" height="390" src="@Model[0].Resource.VideoUrl" frameborder="0" allowfullscreen></iframe>
         }
+
+        <ul class="pager">
+            @if (ViewBag.PagePrevious == 0)
+            {
+                <li class="previous disabled">
+                    <a href="/@ViewBag.CategorieNameWithOutSpaces/@ViewBag.PagePrevious">← Previous Joke</a>
+                </li>
+            }
+            else
+            {
+                <li class="previous">
+                    <a href="/@ViewBag.CategorieNameWithOutSpaces/@ViewBag.PagePrevious">← Previous Joke</a>
+                </li>
+            }
+            <li class="next">
+                <a href="/@ViewBag.CategorieNameWithOutSpaces/@ViewBag.PageNext">Next Joke →</a>
+            </li>
+        </ul>
+
+        <br /><br />
     </div>
 
 
-            <ul class="pager">
-                @if (ViewBag.PagePrevious == 0)
-                {
-                    <li class="previous disabled">
-                        <a href="/@ViewBag.CategorieNameWithOutSpaces/@ViewBag.PagePrevious">← Previous Joke</a>
-                    </li>
-                }
-                else
-                {
-                    <li class="previous">
-                        <a href="/@ViewBag.CategorieNameWithOutSpaces/@ViewBag.PagePrevious">← Previous Joke</a>
-                    </li>
-                }
-                <li class="next">
-                    <a href="@Url.Action("Index", new {categoryMachineName = ViewBag.CategoryMachineName, page = ViewBag.CurrentPage + 1})">Next Joke →</a>
-                </li>
-            </ul>
+    @*===============COMMENTS*@
 
 
-        @*===============COMMENTS*@
+    @if (@Model[0].CommentsCount == 0)
+    {
+        <h2>Comments <span>(@Model[0].CommentsCount)</span></h2>
 
+        <a href="#" class="btn btn-success disabled">View Comments</a>
+        <a href="#" class="btn btn-default">Post New Comment</a>
+    }
+    else
+    {
+        <h2>Comments<span>(@Model[0].CommentsCount)</span></h2>
 
-        @if (@Model[0].CommentsCount == 0)
-        {
-            <h2>Comments <span>(@Model[0].CommentsCount)</span></h2>
-
-            <a href="#" class="btn btn-success disabled">View Comments</a>
-            <a href="#" class="btn btn-default">Post New Comment</a>
-        }
-        else
-        {
-            <h2>Comments<span>(@Model[0].CommentsCount)</span></h2>
-
-            @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new { id = @Model[0].Id },
+        @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new { id = @Model[0].Id },
             new AjaxOptions
             {
                 InsertionMode = InsertionMode.Replace,
                 UpdateTargetId = "comment-box"
             }, new { @class = "btn btn-success" })
 
-            <a href="#" class="btn btn-default">Post New Comment</a>
-            <br /><br />
-        }
+        <a href="#" class="btn btn-default">Post New Comment</a>
+        <br /><br />
+    }
 
-        <div id="comment-box"> </div>
+    <div id="comment-box"> </div>
 
-        @*TODO - Пейджинг за коментарите, тъй като може да са 5 коментара, а може и 500. Навигацията между следващи и предишни коментари става чрез Next/Preview бутоните*@
+    @*TODO - Пейджинг за коментарите, тъй като може да са 5 коментара, а може и 500. Навигацията между следващи и предишни коментари става чрез Next/Preview бутоните*@
 
-    </div><!-- wrapper tag end -->
-    @*@section scripts{
-            <script>
-                function loadComments(itemId) {
-                    $.get("comments/" + itemId)
-                        .done(function(data) {
-                            $(".comments-container-" + itemId + " .comments-container").html(data);
-                            $(".comments-container-" + itemId).slideDown("fast");
-                        });
-                }
-
-
-                $("#jokes-container").on("click", function (ev) {
-                    var target = $(ev.target);
-                    var postControls = target.parent(".post-controls");
-                    var itemId = postControls.data("item-id");
-
-                    if (target.is(".show-comments-btn")) {
-                        loadComments(itemId);
-                        $(ev.target).hide();
-                        postControls.children(".hide-comments-btn").show();
-                    }
-                    else if (target.is(".hide-comments-btn")) {
-                        $(".comments-container-" + itemId).slideUp("fast");
-                        $(ev.target).hide();
-                        postControls.children(".show-comments-btn").show();
-                    }
-                });
-
-                $(".add-comment-form").on("submit",
-                    function (ev) {
-                    ev.preventDefault();
-
-                    var itemId = $(ev.target).data("item-id");
-                    var formData = $(this).serialize();
-
-                        $.post("comments/add/", formData)
-                            .done(function() {
-                                loadComments(itemId);
-                            });
+</div><!-- wrapper tag end -->
+@*@section scripts{
+        <script>
+            function loadComments(itemId) {
+                $.get("comments/" + itemId)
+                    .done(function(data) {
+                        $(".comments-container-" + itemId + " .comments-container").html(data);
+                        $(".comments-container-" + itemId).slideDown("fast");
                     });
-            </script>
-        }*@
+            }
+
+
+            $("#jokes-container").on("click", function (ev) {
+                var target = $(ev.target);
+                var postControls = target.parent(".post-controls");
+                var itemId = postControls.data("item-id");
+
+                if (target.is(".show-comments-btn")) {
+                    loadComments(itemId);
+                    $(ev.target).hide();
+                    postControls.children(".hide-comments-btn").show();
+                }
+                else if (target.is(".hide-comments-btn")) {
+                    $(".comments-container-" + itemId).slideUp("fast");
+                    $(ev.target).hide();
+                    postControls.children(".show-comments-btn").show();
+                }
+            });
+
+            $(".add-comment-form").on("submit",
+                function (ev) {
+                ev.preventDefault();
+
+                var itemId = $(ev.target).data("item-id");
+                var formData = $(this).serialize();
+
+                    $.post("comments/add/", formData)
+                        .done(function() {
+                            loadComments(itemId);
+                        });
+                });
+        </script>
+    }*@

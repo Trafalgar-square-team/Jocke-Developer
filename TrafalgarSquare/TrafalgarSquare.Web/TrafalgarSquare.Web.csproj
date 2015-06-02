@@ -337,6 +337,7 @@
     <Content Include="Views\Messages\FromUser.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\MessageViewModel.cshtml" />
     <Content Include="Views\Comments\_CommentsDetailsPartial.cshtml" />
+    <Content Include="Views\Shared\CreatePostView.cshtml" />
     <Content Include="Views\Posts\Index.cshtml" />
     <None Include="Views\Manage\ChangeAvatar.cshtml" />
     <None Include="Views\Manage\ChangeBirthday.cshtml" />
@@ -344,12 +345,7 @@
     <None Include="Views\Manage\ChangeEmail.cshtml" />
     <Content Include="Views\Notifications\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\NotificationViewModel.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\Manage\ChangeGender.cshtml" />
-=======
-    <Content Include="Views\Posts\CreatePost.cshtml" />
-    <Content Include="Views\Posts\PostById.cshtml" />
->>>>>>> b1818e3b9dfc75954d1da12ee85e2081d4e10bc9
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
