@@ -82,7 +82,7 @@ namespace TrafalgarSquare.Web.Controllers
                 post.PostOwnerId = User.Identity.GetUserId();
                 Data.Posts.Add(post);
                 Data.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c => !c.IsDisabled), "Id", "Name", post.CategoryId);
@@ -96,12 +96,12 @@ namespace TrafalgarSquare.Web.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             var post = Data.Posts.GetById(id);
             if (post == null || post.PostOwnerId != User.Identity.GetUserId())
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c => !c.IsDisabled), "Id", "Name", post.CategoryId);
@@ -110,18 +110,20 @@ namespace TrafalgarSquare.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
+        [Route("post/edit/{id}")]
         public ActionResult EditPost([Bind(Include = "Id,Title,Text,Resource,CategoryId,CreatedDateTime,IsReported")] Post post)
         {
             if (ModelState.IsValid)
             {
                 if (post.PostOwnerId != User.Identity.GetUserId())
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", "Home");
                 }
 
                 Data.Posts.Update(post);
                 Data.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c => !c.IsDisabled), "Id", "Name", post.CategoryId);
             return View(post);
@@ -137,7 +139,7 @@ namespace TrafalgarSquare.Web.Controllers
             var post = Data.Posts.GetById(id);
             if (post == null || post.PostOwnerId != User.Identity.GetUserId())
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             return View(post);
         }
@@ -150,12 +152,12 @@ namespace TrafalgarSquare.Web.Controllers
             var post = Data.Posts.GetById(id);
             if (post == null || post.PostOwnerId != User.Identity.GetUserId())
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
-            Data.Posts.DeleteById(id);
+            Data.Posts.Delete(post);
             Data.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Home");
         }
 
 
