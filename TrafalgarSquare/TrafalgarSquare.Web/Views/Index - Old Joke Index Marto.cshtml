@@ -68,30 +68,34 @@
 
                         </div>
                     </div>
+                    @if (!User.Identity.IsAuthenticated) {
+                        <div class="comments-container-@joke.Id col-xs-12" style="display: none">
+                            <div class="comments-container"></div>
+                            <form class="add-comment-form">
+                                <textarea class="form-control" name="text"></textarea>
+                                <input type="hidden" value="@joke.Id" name="postId" class="post-id"/>
 
-                    <div class="comments-container-@joke.Id col-xs-12" style="display: none">
-                        <div class="comments-container"></div>
-                        <form class="add-comment-form">
-                            <textarea class="form-control" name="text"></textarea>
-                            <input type="hidden" value="@joke.Id" name="postId"/>
-
-                            <button class="btn btn-info btn-small submit-comment">Submit</button>
-                        </form>
-                    </div>
+                                <button class="btn btn-info btn-small submit-comment">Submit</button>
+                            </form>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     }
+    <div class="btn btn-default" class="showNoty">Show noty</div>
 </div>
 
 @section scripts{
     <script>
         function loadComments(itemId) {
-            $.get("comments/" + itemId)
+            var promise = $.get("comments/" + itemId)
                 .done(function(data) {
                     $(".comments-container-" + itemId + " .comments-container").html(data);
                     $(".comments-container-" + itemId).slideDown("fast");
                 });
+            
+            return promise;
         }
 
 
@@ -101,9 +105,11 @@
             var itemId = postControls.data("item-id");
 
             if (target.is(".show-comments-btn")) {
-                loadComments(itemId);
-                $(ev.target).hide();
-                postControls.children(".hide-comments-btn").show();
+                loadComments(itemId)
+                    .then(function(){
+                        $(ev.target).hide();
+                        postControls.children(".hide-comments-btn").show();
+                    });
             }
             else if (target.is(".hide-comments-btn")) {
                 $(".comments-container-" + itemId).slideUp("fast");
@@ -114,13 +120,13 @@
 
         $(".add-comment-form").on("submit",
             function (ev) {
-            ev.preventDefault();
+                ev.preventDefault();
 
-            var itemId = $(ev.target).data("item-id");
-            var formData = $(this).serialize();
+                var itemId = $(this).children(".post-id").val();
+                var formData = $(this).serialize();
 
-                $.post("comments/add/", formData)
-                    .done(function() {
+                $.post("comment/add/", formData)
+                    .done(function (data) {
                         loadComments(itemId);
                     });
             });
