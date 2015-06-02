@@ -28,7 +28,7 @@
                         </div>
                         <div class="col-sm-9">
                             <div>
-                                <strong>Author: </strong><a href="#">@post.User.Username</a>
+                                <strong>Author: </strong><a href="@Url.Action("Index", "Users", new { username = post.User.Username })">@post.User.Username</a>
                             </div>
                             <div>
                                 <strong>Posted on: </strong><a href="#">@post.CreatedDateTime</a>
@@ -36,21 +36,23 @@
                             <div>
                                 <strong>Likes</strong> <span class="badge">@post.Likes</span>
                             </div>
-                            <small>@*Is reported: @Model[i].IsReported*@</small>
+                            @*<small>Is reported: @Model[i].IsReported</small>*@
                         </div>
                     </div>
                 </div>
                 <div class="panel-body text-center">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <div class="text-right row">
-                            <a href="#" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>
-                            @*<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-bell"></span> Report abuse</a>*@
-                            @if (User.Identity.GetUserId() == post.User.Id)
-                            {
-                                <a href="@Url.Action("EditPost", new {id = post.Id})" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
-                                <a href="@Url.Action("DeletePost", new {id = post.Id})" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-pencil"></span> Delete</a>
-                            }
+                        <div class="text-left row">
+                            <div class="col-xs-12">
+                                <a href="#" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>
+                                @*<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-bell"></span> Report abuse</a>*@
+                                @if (User.Identity.GetUserId() == post.User.Id)
+                                {
+                                    <a href="@Url.Action("EditPost", new {id = post.Id})" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                                    <a href="@Url.Action("DeletePost", new {id = post.Id})" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-pencil"></span> Delete</a>
+                                }
+                            </div>
                         </div>
 
                     }
