@@ -11,7 +11,7 @@
     </ol>
     @if (User.Identity.IsAuthenticated)
     {
-        <a href="/Categories/EditorForPosts" class="btn btn-success btn-xl"><span class="glyphicon glyphicon-plus"></span> Create Post</a>
+        <a href="@Url.Action("CreatePost")" class="btn btn-success btn-xl"><span class="glyphicon glyphicon-plus"></span> Create Post</a>
     }
         @foreach (var post in Model)
         {
