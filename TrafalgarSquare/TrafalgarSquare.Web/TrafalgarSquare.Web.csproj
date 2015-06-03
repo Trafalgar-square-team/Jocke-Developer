@@ -358,11 +358,8 @@
     <Content Include="Views\Posts\CreatePost.cshtml" />
     <Content Include="Views\Posts\EditPost.cshtml" />
     <Content Include="Views\Posts\DeletePost.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\Posts\LikesIndex.cshtml" />
-=======
     <Content Include="Views\Shared\_PageNotFound404.cshtml" />
->>>>>>> 06161cff418e1c4052a7f21cd848965088830ead
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
