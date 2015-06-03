@@ -7,7 +7,11 @@
 
     <ul class="nav nav-pills">
         <li class="active">
-            <a href="FunnyPictures#"><span class="glyphicon glyphicon-star"> Joke Likes</span> <span class="badge">@Model.Likes</span></a>
+            @*<a href="FunnyPictures#"><span class="glyphicon glyphicon-star"> Joke Likes</span> <span class="badge">@Model.Likes</span></a>*@
+
+            @Html.ActionLink("Joke Likes", "LikesIndex", "Posts", new { id = @Model.Id }, new { @class = "glyphicon glyphicon-thumbs-up" })
+
+
             @*<a href="/posts/LikePost/@Model.Id"><span aria-hidden="true"></span><span class="glyphicon glyphicon-thumbs-up"> Like this joke</span></a>*@
 
             @Html.ActionLink("Like this joke", "LikePost", "Posts", new { id = @Model.Id }, new { @class = "glyphicon glyphicon-thumbs-up" })

@@ -1,0 +1,23 @@
+﻿@model System.Linq.IOrderedQueryable<TrafalgarSquare.Web.ViewModels.PostLikesViewModel>
+
+<br /><br />
+<h2 class="text-warning">Likes for: @ViewBag.PostTitle</h2>
+<hr />
+
+@if (@Model.Any())
+{
+    foreach (var like in @Model)
+    {
+        <div class="like">
+            <a href="/User/Profile/@like.User.UserName"><img class="avatar" src="@like.User.AvatarUrl" alt="No avatar" width="50"/></a>
+
+            <strong>&nbsp;@like.User.UserName</strong>
+            <p ><strong>Liked at: &nbsp;</strong>@like.LikedDateTime</p>
+        </div>
+    }
+}
+else
+{
+    <h3 class="text-danger">No likes for this post :(</h3>
+}
+    

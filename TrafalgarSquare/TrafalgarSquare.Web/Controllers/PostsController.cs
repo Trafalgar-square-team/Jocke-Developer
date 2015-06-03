@@ -1,5 +1,6 @@
 ﻿
 using System.Management.Instrumentation;
+using Ninject.Infrastructure.Language;
 
 namespace TrafalgarSquare.Web.Controllers
 {
@@ -208,24 +209,21 @@ namespace TrafalgarSquare.Web.Controllers
             return posts;
         }
 
-        [Route("post/LikePost/{id}")]
+
+
+        [Authorize]
+        [Route("post/LikeIndex/{id}")]
         public ActionResult LikePost(int id)
         {
             var post = Data.Posts.GetById(id);
-            var userId = User.Identity.GetUserId();
-            var user = Data.Users
-                .All()
-                .FirstOrDefault(x => x.Id == userId);
+            var user = this.UserProfile;
+
             if (post == null )
             {
-                throw new InstanceNotFoundException("null post");
-                //return this.RedirectToAction("Index", "Home");
+                //throw new InstanceNotFoundException("null post");
+                return this.RedirectToAction("Index", "Home");
             }
-            if (user == null)
-            {
-                throw new InstanceNotFoundException("User not found!");
-                //return RedirectToAction("Login", "Account");
-            }
+
             Data.PostsLikes.Add(new PostLikes()
             {
                 PostId = id,
@@ -234,9 +232,27 @@ namespace TrafalgarSquare.Web.Controllers
                 Post = post,
                 LikedDateTime = DateTime.Now
             });
+
             Data.PostsLikes.SaveChanges();
+
             return RedirectToAction("Index", "Home");
             //return RedirectToRoute("post", new{id = id});
         }
+
+        [Route("post/LikePost/{id}")]
+        public ActionResult LikesIndex(int id)
+        {
+            var post = Data.Posts.GetById(id);
+            ViewBag.PostTitle = post.Title;
+
+            var likes = this.Data.PostsLikes
+                .All().Select(PostLikesViewModel.ViewModel)
+                .Where(x => x.PostId == id)
+                .OrderByDescending(x => x.LikedDateTime);
+
+            return this.View(likes);
+        }
+
+
     }
 }

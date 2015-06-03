@@ -221,6 +221,7 @@
     <Compile Include="ViewModels\CommentCreateModel.cs" />
     <Compile Include="ViewModels\NotificationViewModel.cs" />
     <Compile Include="ViewModels\PostCreateBindModel.cs" />
+    <Compile Include="ViewModels\PostLikesViewModel.cs" />
     <Compile Include="ViewModels\PostViewModel.cs" />
     <Compile Include="ViewModels\Message\MessageViewModel.cs" />
     <Compile Include="ViewModels\User\ChatFriendViewModel.cs" />
@@ -351,6 +352,7 @@
     <Content Include="Views\Posts\CreatePost.cshtml" />
     <Content Include="Views\Posts\EditPost.cshtml" />
     <Content Include="Views\Posts\DeletePost.cshtml" />
+    <Content Include="Views\Posts\LikesIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
