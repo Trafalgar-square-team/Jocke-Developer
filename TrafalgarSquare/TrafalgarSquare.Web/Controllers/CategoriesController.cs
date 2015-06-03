@@ -15,13 +15,5 @@
             : base(data)
         {
         }
-
-        [Route("Categories/DeletePost/{postId}")]
-        public ActionResult DeletePost(int postId)
-        {
-            this.DeletePostInCategorie(postId);
-
-            return this.Redirect("/");
-        }
     }
 }

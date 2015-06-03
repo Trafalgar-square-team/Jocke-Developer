@@ -1,9 +1,10 @@
 ﻿namespace TrafalgarSquare.Web.ViewModels.Message
 {
     using System;
-    using TrafalgarSquare.Web.ViewModels.User;
+    using Automapper;
+    using User;
 
-    public class MessageViewModel
+    public class MessageViewModel : IMapFrom<Models.Message>
     {
         public int Id { get; set; }
 
@@ -13,10 +14,10 @@
 
         public DateTime SendDateTime { get; set; }
 
-        public virtual UserViewModel Sender { get; set; }
+        public UserViewModel Sender { get; set; }
 
         public string RecepientId { get; set; }
 
-        public virtual UserViewModel Recepient { get; set; }
+        public UserViewModel Recepient { get; set; }
     }
 }

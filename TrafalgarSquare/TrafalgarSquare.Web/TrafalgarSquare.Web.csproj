@@ -206,12 +206,16 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Automapper\AutoMapperConfig.cs" />
     <Compile Include="Automapper\Extensions.cs" />
     <Compile Include="Automapper\IHaveCustomMappings.cs" />
     <Compile Include="Automapper\IMapFrom.cs" />
+    <Compile Include="Automapper\IMapTo.cs" />
     <Compile Include="Automapper\MapInitializer.cs" />
+    <Compile Include="Automapper\TypesMap.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\CommentsController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Controllers\NotificationsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -253,6 +257,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\images\error_404_page_not_found_by_siddharthag-d3125uw.jpg" />
     <Content Include="Content\loader-anim.gif" />
     <Content Include="Content\site.css" />
     <Content Include="favicon.ico" />
@@ -340,6 +345,7 @@
     <Content Include="Views\Shared\DisplayTemplates\MessageViewModel.cshtml" />
     <Content Include="Views\Comments\_CommentsDetailsPartial.cshtml" />
     <Content Include="Views\Posts\Index.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
     <None Include="Views\Manage\ChangeAvatar.cshtml" />
     <None Include="Views\Manage\ChangeBirthday.cshtml" />
     <None Include="Views\Manage\ChangeCity.cshtml" />
@@ -351,6 +357,7 @@
     <Content Include="Views\Posts\CreatePost.cshtml" />
     <Content Include="Views\Posts\EditPost.cshtml" />
     <Content Include="Views\Posts\DeletePost.cshtml" />
+    <Content Include="Views\Shared\_PageNotFound404.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
