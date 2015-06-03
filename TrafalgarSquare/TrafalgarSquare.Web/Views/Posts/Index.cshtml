@@ -22,7 +22,7 @@
                         @if (!string.IsNullOrEmpty(@post.User.AvatarUrl))
                         {
                             <div class="col-md-2">
-                                <img src="@post.User.AvatarUrl" alt="@post.User.Username" style="max-height: 70px"/>
+                                <img src="@post.User.AvatarUrl" alt="@post.User.Username" style="max-height: 70px" />
                             </div>
                         }
                     </div>
@@ -71,7 +71,7 @@
                 }
                 @if (!string.IsNullOrEmpty(@post.Resource.PictureUrl))
                 {
-                    <img src="@post.Resource.PictureUrl" class="img-thumbnail joke-box-image" alt="@post.Title"/>
+                    <img src="@post.Resource.PictureUrl" class="img-thumbnail joke-box-image" alt="@post.Title" />
                 }
                 @if (!string.IsNullOrEmpty(@post.Resource.VideoUrl))
                 {
@@ -98,19 +98,18 @@
                 else
                 {
                     <h4>Comments <span>(@post.CommentsCount)</span></h4>
-                    
 
-                    @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new {id = @post.Id},
+
+                    @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new { id = @post.Id },
                         new AjaxOptions
                         {
                             InsertionMode = InsertionMode.Replace,
                             UpdateTargetId = "comment-box",
                             LoadingElementId = "loading-status"
-                        }, new {@class = "btn btn-success"})
+                        }, new { @class = "btn btn-success" })
 
-                      <a href="#" class="btn btn-default" id="create-comment-button">Post New Comment</a>
-                    <br/><br/>
-
+                    <a href="#" class="btn btn-default" id="create-comment-button">Post New Comment</a>
+                    <br /><br />
 
                     <img id="loading-status" src="/Content/loader-anim.gif" alt="" style="display: none" width="35" />
                     <div id="new-comment-preview"></div>
@@ -126,13 +125,13 @@
                     }))
                     {
                         <textarea name="newCommentText" placeholder="your comment..."></textarea>
-                        <inpute type="hidden" name="userId" value=@post.User.Id/>
+                        <inpute type="hidden" name="userId" value=@post.User.Id />
                         <inpute type="hidden" name="userName" value=@post.User.Username />
-                         <inpute type="hidden" name="AvatarUrl" value=@post.User.AvatarUrl />
+                        <inpute type="hidden" name="AvatarUrl" value=@post.User.AvatarUrl />
 
                     }
                     <div class="form-group">
-                        <div >
+                        <div>
                             <input type="submit" value="Create" class="btn btn-default" />
                         </div>
                     </div>
@@ -169,4 +168,4 @@
         $("#create-comment-box").
         show();
     });
- </script>
+</script>

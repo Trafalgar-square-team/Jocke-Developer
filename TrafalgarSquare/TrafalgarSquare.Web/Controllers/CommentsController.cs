@@ -1,7 +1,4 @@
-﻿using System;
-using TrafalgarSquare.Models;
-
-namespace TrafalgarSquare.Web.Controllers
+﻿namespace TrafalgarSquare.Web.Controllers
 {
     using System.Linq;
     using System.Web.Mvc;
@@ -38,8 +35,8 @@ namespace TrafalgarSquare.Web.Controllers
                            AvatarUrl = c.User.AvatarUrl
                        }
                    })
-/*                   .Skip((2 - 1) * 2)
-                   .Take(2)*/
+                    /*                   .Skip((2 - 1) * 2)
+                                       .Take(2)*/
                    .ToList();
 
                 return this.PartialView("_CommentsDetailsPartial", commentsFromAjax);
@@ -63,12 +60,11 @@ namespace TrafalgarSquare.Web.Controllers
                .Take(2)
                .ToList();
 
-            return this.View(comments);         
+            return this.View(comments);
         }
 
-
-         [HttpGet]
-         [Route("Comments/{postId}")]
+        [HttpGet]
+        [Route("Comments/{postId}")]
          public ActionResult Comments(int postId)
          {
              var comments = Data.Comments.All()

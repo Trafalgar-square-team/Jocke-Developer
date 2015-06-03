@@ -1,11 +1,10 @@
 ﻿@model IEnumerable<TrafalgarSquare.Web.ViewModels.User.ChatFriendViewModel>
 <div id="wrapper">
-  
-        <div class="col-md-9">
-            <div class="row">
-            <ul class="breadcrumb">
-              <li class="active">Chat with other Users:</li>
-           
+
+    <div class="col-md-9">
+        <div class="row">
+            <div class="breadcrumb">
+                <div class="active">Chat with other Users:</div>
             </div>
             <div>
                 <div class="row" id="messages"></div>
@@ -14,26 +13,28 @@
                     <a class="col-md-2 btn btn-info" id="send-message-button">Send</a>
                 </div>
             </div>
-             </ul>
         </div>
-        <div class="col-md-3">
-            <ul class="breadcrumb">
-              <li class="active">Your Friends:</li>
+    </div>
+    <div class="col-md-3">
+        <ul class="breadcrumb">
+            <li class="active">Your Friends:</li>
+        </ul>
+
+        @if (!@Model.Any())
+        {
+            <p class="text-warning">You don't have added friends to send them a message.</p>
+        }
+        else
+        {
+            <ul class="list-group chatUsersUl">
+                @Html.DisplayFor(z => z)
             </ul>
-
-            @if (!@Model.Any())
-            {
-                <p class="text-warning">You don't have added friends to send them a message.</p>
-            }
-            else
-            {
-                <ul class="list-group chatUsersUl">
-                    @Html.DisplayFor(z => z)
-                </ul>
-            }
-        </div>
-
+        }
+    </div>
 </div>
+
+
+
 
 
 @section Scripts{

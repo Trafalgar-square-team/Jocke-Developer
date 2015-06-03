@@ -7,6 +7,7 @@
     using TrafalgarSquare.Models;
     using TrafalgarSquare.Web.Automapper;
     using User;
+
     public class CommentCreateModel : IMapFrom<Comment>
     {
         public string Text { get; set; }

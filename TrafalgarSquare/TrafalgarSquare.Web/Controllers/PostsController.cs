@@ -23,18 +23,18 @@ namespace TrafalgarSquare.Web.Controllers
         public ActionResult Index(string categoryMachineName, int page = 1)
         {
             page = page < 1 ? 1 : page;
-            var category = GetCategoryByMachineName(categoryMachineName);
+            var category = this.GetCategoryByMachineName(categoryMachineName);
             if (category == null)
             {
-                return RedirectToAction("Index", "Home");
+                return this.RedirectToAction("Index", "Home");
             }
 
             ViewBag.Title = category.Name;
             ViewBag.CategoryMachineName = categoryMachineName;
             ViewBag.CurrentPage = page;
-            var posts = GetPostsByCategory(category.Id, page).OrderByDescending(p=>p.CreatedDateTime).ToList();
+            var posts = this.GetPostsByCategory(category.Id, page).OrderByDescending(p => p.CreatedDateTime).ToList();
 
-            return View(posts);
+            return this.View(posts);
         }
 
         [Route("post/{postId:int}")]
@@ -60,7 +60,7 @@ namespace TrafalgarSquare.Web.Controllers
                     }
                 }).FirstOrDefault();
 
-            return View(post);
+            return this.View(post);
         }
 
         [Authorize]
@@ -82,11 +82,11 @@ namespace TrafalgarSquare.Web.Controllers
                 post.PostOwnerId = User.Identity.GetUserId();
                 Data.Posts.Add(post);
                 Data.SaveChanges();
-                return RedirectToAction("Index", "Home");
+                return this.RedirectToAction("Index", "Home");
             }
 
             ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c => !c.IsDisabled), "Id", "Name", post.CategoryId);
-            return View(post);
+            return this.View(post);
         }
 
         [HttpGet]
@@ -96,16 +96,16 @@ namespace TrafalgarSquare.Web.Controllers
         {
             if (id == null)
             {
-                return RedirectToAction("Index", "Home");
+                return this.RedirectToAction("Index", "Home");
             }
             var post = Data.Posts.GetById(id);
             if (post == null || post.PostOwnerId != User.Identity.GetUserId())
             {
-                return RedirectToAction("Index", "Home");
+                return this.RedirectToAction("Index", "Home");
             }
 
             ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c => !c.IsDisabled), "Id", "Name", post.CategoryId);
-            return View(post);
+            return this.View(post);
         }
 
         [HttpPost]
@@ -118,15 +118,15 @@ namespace TrafalgarSquare.Web.Controllers
             {
                 if (post.PostOwnerId != User.Identity.GetUserId())
                 {
-                    return RedirectToAction("Index", "Home");
+                    return this.RedirectToAction("Index", "Home");
                 }
 
                 Data.Posts.Update(post);
                 Data.SaveChanges();
-                return RedirectToAction("Index", "Home");
+                return this.RedirectToAction("Index", "Home");
             }
             ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c => !c.IsDisabled), "Id", "Name", post.CategoryId);
-            return View(post);
+            return this.View(post);
         }
 
         [Route("post/delete/{id}")]
@@ -136,12 +136,14 @@ namespace TrafalgarSquare.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             var post = Data.Posts.GetById(id);
             if (post == null || post.PostOwnerId != User.Identity.GetUserId())
             {
-                return RedirectToAction("Index", "Home");
+                return this.RedirectToAction("Index", "Home");
             }
-            return View(post);
+
+            return this.View(post);
         }
 
         [HttpPost]
@@ -152,12 +154,12 @@ namespace TrafalgarSquare.Web.Controllers
             var post = Data.Posts.GetById(id);
             if (post == null || post.PostOwnerId != User.Identity.GetUserId())
             {
-                return RedirectToAction("Index", "Home");
+                return this.RedirectToAction("Index", "Home");
             }
 
             Data.Posts.Delete(post);
             Data.SaveChanges();
-            return RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Index", "Home");
         }
 
 
@@ -169,14 +171,14 @@ namespace TrafalgarSquare.Web.Controllers
         private IEnumerable<PostViewModel> GetPostsByCategory(int categoryId, int page)
         {
 
-            var getPageFromDb = ((page - 1) * PageSize);
+            var getPageFromDb = (page - 1) * PageSize;
 
             if (getPageFromDb < 0)
             {
                 getPageFromDb = 1;
             }
 
-            //TODO Когато заявката иска Пост, който е извън колекцията, да се хвърля правилна грешка, иначе гърми
+            // TODO Когато заявката иска Пост, който е извън колекцията, да се хвърля правилна грешка, иначе гърми
             var posts = Data.Posts.All()
                 .Where(p => p.Category.Id == categoryId)
                 .OrderByDescending(p => p.CreatedDateTime)
