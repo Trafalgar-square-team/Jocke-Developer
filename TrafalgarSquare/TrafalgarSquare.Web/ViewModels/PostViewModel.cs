@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using TrafalgarSquare.Models;
-using TrafalgarSquare.Web.ViewModels.User;
-
-namespace TrafalgarSquare.Web.ViewModels
+﻿namespace TrafalgarSquare.Web.ViewModels
 {
-    public class PostViewModel
+    using System;
+    using Automapper;
+    using Models;
+    using User;
+
+    public class PostViewModel : IMapFrom<Post>
     {
         public int Id { get; set; }
 
