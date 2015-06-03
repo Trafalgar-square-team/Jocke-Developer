@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNet.Identity
+﻿@using System.Activities.Statements
+@using Microsoft.AspNet.Identity
 @using TrafalgarSquare.Web.ViewModels;
 @model List<PostViewModel>
 <div id="wrapper">
@@ -6,167 +7,165 @@
 
     <ol class="breadcrumb">
         <li><a href="@Url.Action("Index", "Home")">Home</a></li>
-        <li><a href="@Url.Action("Index", "Posts", new {ViewBag.categoryMachineName })">@ViewBag.Title</a></li>
-        <li>@Model[0].Title</li>
+        <li>@ViewBag.Title</li>
     </ol>
-    <div class="row well">
-        <div class="col-sm-3">
-            @if (!string.IsNullOrEmpty(@Model[0].User.AvatarUrl))
-            {
-                <div class="col-md-2">
-                    <img src="@Model[0].User.AvatarUrl" alt="@Model[0].User.Username" style="max-height: 70px"/>
-                </div>
-            }
-        </div>
-        <div class="col-sm-9">
-            <div>
-                <strong>Author: </strong><a href="#">@Model[0].User.Username</a>
-            </div>
-            <div>
-                <strong>Posted on: </strong><a href="#">@Model[0].CreatedDateTime</a>
-            </div>
-            <div>
-                <strong>Likes</strong> <span class="badge">@Model[0].Likes</span>
-            </div>
-            <small>@*Is reported: @Model[i].IsReported*@</small>
-        </div>
-    </div>
-    @if (User.Identity.IsAuthenticated) {
-        <a href="/Categories/EditorForPosts" class="btn btn-success btn-md"><span class="glyphicon glyphicon-plus"></span> Create Post</a>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <a href="@Url.Action("CreatePost")" class="btn btn-success btn-xl"><span class="glyphicon glyphicon-plus"></span> Create Post</a>
     }
-
-    <div class="post-box text-center well">
-        @if (User.Identity.IsAuthenticated)
-        {
-            <div class="text-right row">
-                <a href="#" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>
-                <a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-bell"></span> Report abuse</a>
-                @if (User.Identity.GetUserId() == Model[0].User.Id)
+    @foreach (var post in Model)
+    {
+        <div class="post panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-sm-3">
+                        @if (!string.IsNullOrEmpty(@post.User.AvatarUrl))
+                        {
+                            <div class="col-md-2">
+                                <img src="@post.User.AvatarUrl" alt="@post.User.Username" style="max-height: 70px" />
+                            </div>
+                        }
+                    </div>
+                    <div class="col-sm-9">
+                        <div>
+                            <strong>Author: </strong><a href="@Url.Action("Index", "Users", new {username = post.User.Username})">@post.User.Username</a>
+                        </div>
+                        <div>
+                            <strong>Posted on: </strong><a href="#">@post.CreatedDateTime</a>
+                        </div>
+                        <div>
+                            <strong>Likes</strong> <span class="badge">@post.Likes</span>
+                        </div>
+                        @*<small>Is reported: @Model[i].IsReported</small>*@
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body text-center">
+                @if (User.Identity.IsAuthenticated)
                 {
-                    <a href="#" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
-                    <a href="#" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-pencil"></span> Delete</a>
+                    <div class="text-left row">
+                        <div class="col-xs-12">
+                            <a href="#" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>
+                            @*<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-bell"></span> Report abuse</a>*@
+                            @if (User.Identity.GetUserId() == post.User.Id)
+                            {
+                                <a href="@Url.Action("EditPost", new {id = post.Id})" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                                <a href="@Url.Action("DeletePost", new {id = post.Id})" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-pencil"></span> Delete</a>
+                            }
+                        </div>
+                    </div>
+
+                }
+
+                <h2 class="text-warning">@post.Title</h2>
+
+                <p>@post.Text</p>
+                <br>
+
+                @*==========LOADING PARTIAL CONTENT*@
+
+                @if (!string.IsNullOrEmpty(@post.Resource.FileUrl))
+                {
+                    <span>Attached file: </span>
+                    <a href="@post.Resource.FileUrl">download</a>
+                }
+                @if (!string.IsNullOrEmpty(@post.Resource.PictureUrl))
+                {
+                    <img src="@post.Resource.PictureUrl" class="img-thumbnail joke-box-image" alt="@post.Title" />
+                }
+                @if (!string.IsNullOrEmpty(@post.Resource.VideoUrl))
+                {
+                    <!-- <video controls>
+                        <source src="@post.Resource.VideoUrl" type="video/mp4">
+                        Your browser does not support HTML5 video.
+                        https://www.youtube.com/embed/2hUvgZ_djmk
+                    </video> -->
+
+                    <iframe width="640" height="390" src="@post.Resource.VideoUrl" frameborder="0" allowfullscreen></iframe>
                 }
             </div>
 
-        }
+            @*===============COMMENTS*@
+            <div class="panel-footer-custom">
 
-        <h2 class="text-warning">@Model[0].Title</h2>
-
-        <p>@Model[0].Text</p>
-        <br>
-
-        @*==========LOADING PARTIAL CONTENT*@
-
-        @if (!string.IsNullOrEmpty(@Model[0].Resource.FileUrl))
-        {
-            <span>Attached file: </span>
-            <a href="@Model[0].Resource.FileUrl">download</a>
-        }
-        @if (!string.IsNullOrEmpty(@Model[0].Resource.PictureUrl))
-        {
-            <img src="@Model[0].Resource.PictureUrl" class="img-thumbnail joke-box-image" alt="@Model[0].Title" />
-        }
-        @if (!string.IsNullOrEmpty(@Model[0].Resource.VideoUrl))
-        {
-            <!-- <video controls>
-                <source src="@Model[0].Resource.VideoUrl" type="video/mp4">
-                Your browser does not support HTML5 video.
-                https://www.youtube.com/embed/2hUvgZ_djmk
-            </video> -->
-
-            <iframe width="640" height="390" src="@Model[0].Resource.VideoUrl" frameborder="0" allowfullscreen></iframe>
-        }
-    </div>
-
-
-            <ul class="pager">
-                @if (ViewBag.PagePrevious == 0)
+                @if (@post.CommentsCount == 0)
                 {
-                    <li class="previous disabled">
-                        <a href="/@ViewBag.CategorieNameWithOutSpaces/@ViewBag.PagePrevious">← Previous Joke</a>
-                    </li>
+                    <h4>Comments <span>(@post.CommentsCount)</span></h4>
+
+                    <a href="#" class="btn btn-success disabled">View Comments</a>
+                    <a href="#" class="btn btn-default" id="create-comment-button">Post New Comment</a>
                 }
                 else
                 {
-                    <li class="previous">
-                        <a href="/@ViewBag.CategorieNameWithOutSpaces/@ViewBag.PagePrevious">← Previous Joke</a>
-                    </li>
+                    <h4>Comments <span>(@post.CommentsCount)</span></h4>
+
+
+                    @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new { id = @post.Id },
+                        new AjaxOptions
+                        {
+                            InsertionMode = InsertionMode.Replace,
+                            UpdateTargetId = "comment-box",
+                            LoadingElementId = "loading-status"
+                        }, new { @class = "btn btn-success" })
+
+                    <a href="#" class="btn btn-default" id="create-comment-button">Post New Comment</a>
+                    <br /><br />
+
+                    <img id="loading-status" src="/Content/loader-anim.gif" alt="" style="display: none" width="35" />
+                    <div id="new-comment-preview"></div>
+
                 }
-                <li class="next">
-                    <a href="@Url.Action("Index", new {categoryMachineName = ViewBag.CategoryMachineName, page = ViewBag.CurrentPage + 1})">Next Joke →</a>
-                </li>
-            </ul>
 
+                <div id="comment-box"> </div>
+                <div id="create-comment-box" style="display: none">
+                    @using (Ajax.BeginForm("CreateComment", new AjaxOptions
+                    {
+                        UpdateTargetId = "new-comment-preview",
+                        InsertionMode = InsertionMode.Replace
+                    }))
+                    {
+                        <textarea name="newCommentText" placeholder="your comment..."></textarea>
+                        <inpute type="hidden" name="userId" value=@post.User.Id />
+                        <inpute type="hidden" name="userName" value=@post.User.Username />
+                        <inpute type="hidden" name="AvatarUrl" value=@post.User.AvatarUrl />
 
-        @*===============COMMENTS*@
+                    }
+                    <div class="form-group">
+                        <div>
+                            <input type="submit" value="Create" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
 
+            </div>
+        </div>
+    }
 
-        @if (@Model[0].CommentsCount == 0)
+    <ul class="pager">
+        @if (ViewBag.PagePrevious == 0)
         {
-            <h2>Comments <span>(@Model[0].CommentsCount)</span></h2>
-
-            <a href="#" class="btn btn-success disabled">View Comments</a>
-            <a href="#" class="btn btn-default">Post New Comment</a>
+            <li class="previous disabled">
+                <a href="/@ViewBag.CategorieNameWithOutSpaces/@ViewBag.PagePrevious">← Previous Joke</a>
+            </li>
         }
         else
         {
-            <h2>Comments<span>(@Model[0].CommentsCount)</span></h2>
-
-            @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new { id = @Model[0].Id },
-            new AjaxOptions
-            {
-                InsertionMode = InsertionMode.Replace,
-                UpdateTargetId = "comment-box"
-            }, new { @class = "btn btn-success" })
-
-            <a href="#" class="btn btn-default">Post New Comment</a>
-            <br /><br />
+            <li class="previous">
+                <a href="/@ViewBag.CategorieNameWithOutSpaces/@ViewBag.PagePrevious">← Previous Joke</a>
+            </li>
         }
+        <li class="next">
+            <a href="@Url.Action("Index", new {categoryMachineName = ViewBag.CategoryMachineName, page = ViewBag.CurrentPage + 1})">Next Joke →</a>
+        </li>
+    </ul>
 
-        <div id="comment-box"> </div>
+    @*TODO - Пейджинг за коментарите, тъй като може да са 5 коментара, а може и 500. Навигацията между следващи и предишни коментари става чрез Next/Preview бутоните*@
 
-        @*TODO - Пейджинг за коментарите, тъй като може да са 5 коментара, а може и 500. Навигацията между следващи и предишни коментари става чрез Next/Preview бутоните*@
+</div>
 
-    </div><!-- wrapper tag end -->
-    @*@section scripts{
-            <script>
-                function loadComments(itemId) {
-                    $.get("comments/" + itemId)
-                        .done(function(data) {
-                            $(".comments-container-" + itemId + " .comments-container").html(data);
-                            $(".comments-container-" + itemId).slideDown("fast");
-                        });
-                }
-
-
-                $("#jokes-container").on("click", function (ev) {
-                    var target = $(ev.target);
-                    var postControls = target.parent(".post-controls");
-                    var itemId = postControls.data("item-id");
-
-                    if (target.is(".show-comments-btn")) {
-                        loadComments(itemId);
-                        $(ev.target).hide();
-                        postControls.children(".hide-comments-btn").show();
-                    }
-                    else if (target.is(".hide-comments-btn")) {
-                        $(".comments-container-" + itemId).slideUp("fast");
-                        $(ev.target).hide();
-                        postControls.children(".show-comments-btn").show();
-                    }
-                });
-
-                $(".add-comment-form").on("submit",
-                    function (ev) {
-                    ev.preventDefault();
-
-                    var itemId = $(ev.target).data("item-id");
-                    var formData = $(this).serialize();
-
-                        $.post("comments/add/", formData)
-                            .done(function() {
-                                loadComments(itemId);
-                            });
-                    });
-            </script>
-        }*@
+<script>
+    $("#create-comment-button").on("click", function(ev) {
+        $("#create-comment-box").
+        show();
+    });
+</script>

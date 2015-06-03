@@ -133,13 +133,15 @@ select {
     overflow-x: hidden;
     background-color: #93c54b;
 }
+
 .message {
     color: aqua;
 }
 
-.message a {
-    color: red;
-}
+    .message a {
+        color: red;
+    }
+
 .chat-user {
     margin-top: 1em;
 }
@@ -149,14 +151,22 @@ select {
 }
 
 .selectedChatUser {
-   background-color:  #93c54b;
+    background-color: #93c54b;
 }
 
 .unseen-notification {
     background-color: orangered;
 }
 
-#notificationsUl >li {
+#notificationsUl > li {
     margin: 1% 0;
     list-style: none;
+}
+
+.panel-footer-custom {
+    padding: 10px 15px;
+    background-color: #f8f5f0;
+    border-top: 1px solid #dfd7ca;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
 }

@@ -1,22 +1,28 @@
 ﻿@model IEnumerable<TrafalgarSquare.Web.ViewModels.User.ChatFriendViewModel>
-<div>
+<div id="wrapper">
+
     <div class="col-md-9">
         <div class="row">
-            <h2><a href=""></a></h2>
-        </div>
-        <div>
-            <div class="row" id="messages"></div>
-            <div class="row">
-                <textarea class="col-md-10" id="personal-message" placeholder="your message..."></textarea>
-                <a class="col-md-2 btn btn-info" id="send-message-button">Send</a>
+            <div class="breadcrumb">
+                <div class="active">Chat with other Users:</div>
+            </div>
+            <div>
+                <div class="row" id="messages"></div>
+                <div class="row">
+                    <textarea class="col-md-9" id="personal-message" placeholder="Write here your message..."></textarea>
+                    <a class="col-md-2 btn btn-info" id="send-message-button">Send</a>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <h2>Friends:</h2>
+        <ul class="breadcrumb">
+            <li class="active">Your Friends:</li>
+        </ul>
+
         @if (!@Model.Any())
         {
-            <p>You don't have friends to send message.</p>
+            <p class="text-warning">You don't have added friends to send them a message.</p>
         }
         else
         {
@@ -26,6 +32,9 @@
         }
     </div>
 </div>
+
+
+
 
 
 @section Scripts{

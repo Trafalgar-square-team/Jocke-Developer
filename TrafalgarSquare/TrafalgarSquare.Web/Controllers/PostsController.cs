@@ -4,6 +4,7 @@ namespace TrafalgarSquare.Web.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Web.Mvc;
     using Data;
     using Microsoft.AspNet.Identity;
@@ -22,18 +23,18 @@ namespace TrafalgarSquare.Web.Controllers
         public ActionResult Index(string categoryMachineName, int page = 1)
         {
             page = page < 1 ? 1 : page;
-            var category = GetCategoryByMachineName(categoryMachineName);
+            var category = this.GetCategoryByMachineName(categoryMachineName);
             if (category == null)
             {
-                return RedirectToAction("Index", "Home");
+                return this.RedirectToAction("Index", "Home");
             }
 
             ViewBag.Title = category.Name;
             ViewBag.CategoryMachineName = categoryMachineName;
             ViewBag.CurrentPage = page;
-            var posts = GetPostsByCategory(category.Id, page).ToList();
+            var posts = this.GetPostsByCategory(category.Id, page).OrderByDescending(p => p.CreatedDateTime).ToList();
 
-            return View(posts);
+            return this.View(posts);
         }
 
         [Route("post/{postId:int}")]
@@ -59,51 +60,106 @@ namespace TrafalgarSquare.Web.Controllers
                     }
                 }).FirstOrDefault();
 
-            return View(post);
+            return this.View(post);
         }
 
         [Authorize]
         [HttpGet]
-        [Route("posts/{categoryMachineName}/add")]
-        public ActionResult CreatePost(string categoryMachineName)
+        [Route("post/create")]
+        public ActionResult CreatePost()
         {
-            var category = GetCategoryByMachineName(categoryMachineName);
-            if (category == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
-            ViewBag.Title = category.Name;
+            ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c=>!c.IsDisabled), "Id", "Name");
             return View();
         }
 
-        [Authorize]
         [HttpPost]
-        [Route("post/add")]
-        public ActionResult CreatePost(PostCreateBindModel post)
+        [ValidateAntiForgeryToken]
+        [Route("post/create")]
+        public ActionResult CreatePost([Bind(Include = "Id,Title,Text,Resource,CategoryId,CreatedDateTime,IsReported")] Post post)
         {
-            var currentUserId = User.Identity.GetUserId();
-
-            var newPost = new Post
+            if (ModelState.IsValid)
             {
-                Text = post.Text,
-                Title = post.Title,
+                post.PostOwnerId = User.Identity.GetUserId();
+                Data.Posts.Add(post);
+                Data.SaveChanges();
+                return this.RedirectToAction("Index", "Home");
+            }
 
-                Resource = new PostResources()
+            ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c => !c.IsDisabled), "Id", "Name", post.CategoryId);
+            return this.View(post);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("post/edit/{id}")]
+        public ActionResult EditPost(int? id)
+        {
+            if (id == null)
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+            var post = Data.Posts.GetById(id);
+            if (post == null || post.PostOwnerId != User.Identity.GetUserId())
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+
+            ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c => !c.IsDisabled), "Id", "Name", post.CategoryId);
+            return this.View(post);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        [Route("post/edit/{id}")]
+        public ActionResult EditPost([Bind(Include = "Id,Title,Text,Resource,CategoryId,CreatedDateTime,IsReported")] Post post)
+        {
+            if (ModelState.IsValid)
+            {
+                if (post.PostOwnerId != User.Identity.GetUserId())
                 {
-                    VideoUrl = post.Resource
-                },
+                    return this.RedirectToAction("Index", "Home");
+                }
 
-                PostOwnerId = currentUserId,
-                CreatedDateTime = DateTime.Now,
-                CategoryId = post.CategoryId
+                Data.Posts.Update(post);
+                Data.SaveChanges();
+                return this.RedirectToAction("Index", "Home");
+            }
+            ViewBag.CategoryId = new SelectList(Data.Categories.All().Where(c => !c.IsDisabled), "Id", "Name", post.CategoryId);
+            return this.View(post);
+        }
 
-            };
+        [Route("post/delete/{id}")]
+        public ActionResult DeletePost(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
 
-            Data.Posts.Add(newPost);
-            Data.Posts.SaveChanges();
+            var post = Data.Posts.GetById(id);
+            if (post == null || post.PostOwnerId != User.Identity.GetUserId())
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
 
-            return View(newPost);
+            return this.View(post);
+        }
+
+        [HttpPost]
+        [Route("post/delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeletePostConfirmed(int id)
+        {
+            var post = Data.Posts.GetById(id);
+            if (post == null || post.PostOwnerId != User.Identity.GetUserId())
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+
+            Data.Posts.Delete(post);
+            Data.SaveChanges();
+            return this.RedirectToAction("Index", "Home");
         }
 
 
@@ -115,14 +171,14 @@ namespace TrafalgarSquare.Web.Controllers
         private IEnumerable<PostViewModel> GetPostsByCategory(int categoryId, int page)
         {
 
-            var getPageFromDb = ((page - 1) * PageSize);
+            var getPageFromDb = (page - 1) * PageSize;
 
             if (getPageFromDb < 0)
             {
                 getPageFromDb = 1;
             }
 
-            //TODO Когато заявката иска Пост, който е извън колекцията, да се хвърля правилна грешка, иначе гърми
+            // TODO Когато заявката иска Пост, който е извън колекцията, да се хвърля правилна грешка, иначе гърми
             var posts = Data.Posts.All()
                 .Where(p => p.Category.Id == categoryId)
                 .OrderByDescending(p => p.CreatedDateTime)

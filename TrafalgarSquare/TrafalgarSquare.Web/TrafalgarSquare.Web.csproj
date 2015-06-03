@@ -218,6 +218,7 @@
     <Compile Include="Helpers\NotyHelper.cs" />
     <Compile Include="Hubs\CustomUserIdProvider.cs" />
     <Compile Include="ViewModels\AddCommentViewModel.cs" />
+    <Compile Include="ViewModels\CommentCreateModel.cs" />
     <Compile Include="ViewModels\NotificationViewModel.cs" />
     <Compile Include="ViewModels\PostCreateBindModel.cs" />
     <Compile Include="ViewModels\PostViewModel.cs" />
@@ -252,6 +253,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\loader-anim.gif" />
     <Content Include="Content\site.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -344,12 +346,11 @@
     <None Include="Views\Manage\ChangeEmail.cshtml" />
     <Content Include="Views\Notifications\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\NotificationViewModel.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\Manage\ChangeGender.cshtml" />
-=======
-    <Content Include="Views\Posts\CreatePost.cshtml" />
     <Content Include="Views\Posts\PostById.cshtml" />
->>>>>>> b1818e3b9dfc75954d1da12ee85e2081d4e10bc9
+    <Content Include="Views\Posts\CreatePost.cshtml" />
+    <Content Include="Views\Posts\EditPost.cshtml" />
+    <Content Include="Views\Posts\DeletePost.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

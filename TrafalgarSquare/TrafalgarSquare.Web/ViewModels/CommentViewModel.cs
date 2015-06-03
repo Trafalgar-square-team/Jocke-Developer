@@ -1,6 +1,4 @@
-﻿
-
-namespace TrafalgarSquare.Web.ViewModels
+﻿namespace TrafalgarSquare.Web.ViewModels
 {
     using System;
     using Automapper;
@@ -10,7 +8,6 @@ namespace TrafalgarSquare.Web.ViewModels
 
     public class CommentViewModel : IMapFrom<Comment>
     {
-
         public int Id { get; set; }
 
         public string Text { get; set; }
