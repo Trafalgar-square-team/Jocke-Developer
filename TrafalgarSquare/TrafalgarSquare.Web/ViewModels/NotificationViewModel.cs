@@ -1,13 +1,15 @@
-﻿
-namespace TrafalgarSquare.Web.ViewModels
+﻿namespace TrafalgarSquare.Web.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Web;
-    using TrafalgarSquare.Web.ViewModels.User;
+    using Automapper;
+    using Models;
+    using User;
 
-    public class NotificationViewModel
+
+    public class NotificationViewModel : IMapFrom<Notification>
     {
         public int Id { get; set; }
 

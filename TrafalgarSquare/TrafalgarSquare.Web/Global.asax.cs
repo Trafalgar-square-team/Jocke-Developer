@@ -1,4 +1,6 @@
-﻿namespace TrafalgarSquare.Web
+﻿using System.Reflection;
+
+namespace TrafalgarSquare.Web
 {
     using System.Web;
     using System.Web.Mvc;
@@ -17,7 +19,10 @@
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            MapInitializer.Initialize();
+
+            // MapInitializer.Initialize();
+            var autoMapper = new AutoMapperConfig(new[] { Assembly.GetExecutingAssembly() });
+            autoMapper.Execute();
         }
     }
 }

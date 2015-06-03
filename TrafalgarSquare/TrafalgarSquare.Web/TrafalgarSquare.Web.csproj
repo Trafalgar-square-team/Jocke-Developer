@@ -206,10 +206,11 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="Automapper\Extensions.cs" />
+    <Compile Include="Automapper\AutoMapperConfig.cs" />
     <Compile Include="Automapper\IHaveCustomMappings.cs" />
     <Compile Include="Automapper\IMapFrom.cs" />
-    <Compile Include="Automapper\MapInitializer.cs" />
+    <Compile Include="Automapper\IMapTo.cs" />
+    <Compile Include="Automapper\TypesMap.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\CommentsController.cs" />
     <Compile Include="Controllers\MessagesController.cs" />

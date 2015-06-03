@@ -1,6 +1,6 @@
 ﻿namespace TrafalgarSquare.Web.Automapper
 {
-    public interface IMapFrom<T>
+    public interface IMapTo<T>
     {
     }
 }

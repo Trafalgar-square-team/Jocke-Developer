@@ -1,6 +1,4 @@
-﻿
-
-namespace TrafalgarSquare.Web.ViewModels
+﻿namespace TrafalgarSquare.Web.ViewModels
 {
     using System;
     using Automapper;
