@@ -10,7 +10,6 @@
     {
         public int Number { get; set; }
 
-        // public UserViewModel FriendUser { get; set; }
         public string Id { get; set; }
 
         public string Username { get; set; }

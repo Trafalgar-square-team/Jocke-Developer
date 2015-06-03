@@ -13,107 +13,133 @@
     {
         <a href="@Url.Action("CreatePost")" class="btn btn-success btn-xl"><span class="glyphicon glyphicon-plus"></span> Create Post</a>
     }
-        @foreach (var post in Model)
-        {
-            <div class="post panel panel-default">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-sm-3">
-                            @if (!string.IsNullOrEmpty(@post.User.AvatarUrl))
-                            {
-                                <div class="col-md-2">
-                                    <img src="@post.User.AvatarUrl" alt="@post.User.Username" style="max-height: 70px" />
-                                </div>
-                            }
+    @foreach (var post in Model)
+    {
+        <div class="post panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-sm-3">
+                        @if (!string.IsNullOrEmpty(@post.User.AvatarUrl))
+                        {
+                            <div class="col-md-2">
+                                <img src="@post.User.AvatarUrl" alt="@post.User.Username" style="max-height: 70px"/>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-sm-9">
+                        <div>
+                            <strong>Author: </strong><a href="@Url.Action("Index", "Users", new {username = post.User.Username})">@post.User.Username</a>
                         </div>
-                        <div class="col-sm-9">
-                            <div>
-                                <strong>Author: </strong><a href="@Url.Action("Index", "Users", new { username = post.User.Username })">@post.User.Username</a>
-                            </div>
-                            <div>
-                                <strong>Posted on: </strong><a href="#">@post.CreatedDateTime</a>
-                            </div>
-                            <div>
-                                <strong>Likes</strong> <span class="badge">@post.Likes</span>
-                            </div>
-                            @*<small>Is reported: @Model[i].IsReported</small>*@
+                        <div>
+                            <strong>Posted on: </strong><a href="#">@post.CreatedDateTime</a>
                         </div>
+                        <div>
+                            <strong>Likes</strong> <span class="badge">@post.Likes</span>
+                        </div>
+                        @*<small>Is reported: @Model[i].IsReported</small>*@
                     </div>
                 </div>
-                <div class="panel-body text-center">
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <div class="text-left row">
-                            <div class="col-xs-12">
-                                <a href="#" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>
-                                @*<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-bell"></span> Report abuse</a>*@
-                                @if (User.Identity.GetUserId() == post.User.Id)
-                                {
-                                    <a href="@Url.Action("EditPost", new {id = post.Id})" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
-                                    <a href="@Url.Action("DeletePost", new {id = post.Id})" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-pencil"></span> Delete</a>
-                                }
-                            </div>
+            </div>
+            <div class="panel-body text-center">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="text-left row">
+                        <div class="col-xs-12">
+                            <a href="#" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>
+                            @*<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-bell"></span> Report abuse</a>*@
+                            @if (User.Identity.GetUserId() == post.User.Id)
+                            {
+                                <a href="@Url.Action("EditPost", new {id = post.Id})" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                                <a href="@Url.Action("DeletePost", new {id = post.Id})" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-pencil"></span> Delete</a>
+                            }
                         </div>
+                    </div>
 
-                    }
+                }
 
-                    <h2 class="text-warning">@post.Title</h2>
+                <h2 class="text-warning">@post.Title</h2>
 
-                    <p>@post.Text</p>
-                    <br>
+                <p>@post.Text</p>
+                <br>
 
-                    @*==========LOADING PARTIAL CONTENT*@
+                @*==========LOADING PARTIAL CONTENT*@
 
-                    @if (!string.IsNullOrEmpty(@post.Resource.FileUrl))
-                    {
-                        <span>Attached file: </span>
-                        <a href="@post.Resource.FileUrl">download</a>
-                    }
-                    @if (!string.IsNullOrEmpty(@post.Resource.PictureUrl))
-                    {
-                        <img src="@post.Resource.PictureUrl" class="img-thumbnail joke-box-image" alt="@post.Title" />
-                    }
-                    @if (!string.IsNullOrEmpty(@post.Resource.VideoUrl))
-                    {
-                        <!-- <video controls>
-                <source src="@post.Resource.VideoUrl" type="video/mp4">
-                Your browser does not support HTML5 video.
-                https://www.youtube.com/embed/2hUvgZ_djmk
-            </video> -->
+                @if (!string.IsNullOrEmpty(@post.Resource.FileUrl))
+                {
+                    <span>Attached file: </span>
+                    <a href="@post.Resource.FileUrl">download</a>
+                }
+                @if (!string.IsNullOrEmpty(@post.Resource.PictureUrl))
+                {
+                    <img src="@post.Resource.PictureUrl" class="img-thumbnail joke-box-image" alt="@post.Title"/>
+                }
+                @if (!string.IsNullOrEmpty(@post.Resource.VideoUrl))
+                {
+                    <!-- <video controls>
+                        <source src="@post.Resource.VideoUrl" type="video/mp4">
+                        Your browser does not support HTML5 video.
+                        https://www.youtube.com/embed/2hUvgZ_djmk
+                    </video> -->
 
-                        <iframe width="640" height="390" src="@post.Resource.VideoUrl" frameborder="0" allowfullscreen></iframe>
-                    }
-                </div>
+                    <iframe width="640" height="390" src="@post.Resource.VideoUrl" frameborder="0" allowfullscreen></iframe>
+                }
+            </div>
 
-                    @*===============COMMENTS*@
-                <div class="panel-footer-custom">
+            @*===============COMMENTS*@
+            <div class="panel-footer-custom">
 
-                    @if (@post.CommentsCount == 0)
-                    {
-                        <h4>Comments <span>(@post.CommentsCount)</span></h4>
+                @if (@post.CommentsCount == 0)
+                {
+                    <h4>Comments <span>(@post.CommentsCount)</span></h4>
 
-                        <a href="#" class="btn btn-success disabled">View Comments</a>
-                        <a href="#" class="btn btn-default">Post New Comment</a>
-                    }
-                    else
-                    {
-                        <h4>Comments <span>(@post.CommentsCount)</span></h4>
+                    <a href="#" class="btn btn-success disabled">View Comments</a>
+                    <a href="#" class="btn btn-default" id="create-comment-button">Post New Comment</a>
+                }
+                else
+                {
+                    <h4>Comments <span>(@post.CommentsCount)</span></h4>
+                    
 
-                        @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new { id = @post.Id },
+                    @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new {id = @post.Id},
                         new AjaxOptions
                         {
                             InsertionMode = InsertionMode.Replace,
-                            UpdateTargetId = "comment-box"
-                        }, new { @class = "btn btn-success" })
+                            UpdateTargetId = "comment-box",
+                            LoadingElementId = "loading-status"
+                        }, new {@class = "btn btn-success"})
 
-                        <a href="#" class="btn btn-default">Post New Comment</a>
-                        <br /><br />
+                      <a href="#" class="btn btn-default" id="create-comment-button">Post New Comment</a>
+                    <br/><br/>
+
+                    <div id="loading-status" style="display: none">Loading...</div>
+                    <div id="new-comment-preview"></div>
+
+                }
+
+                <div id="comment-box"> </div>
+                <div id="create-comment-box" style="display: none">
+                    @using (Ajax.BeginForm("CreateComment", new AjaxOptions
+                    {
+                        UpdateTargetId = "new-comment-preview",
+                        InsertionMode = InsertionMode.Replace
+                    }))
+                    {
+                        <textarea name="newCommentText" placeholder="your comment..."></textarea>
+                        <inpute type="hidden" name="userId" value=@post.User.Id/>
+                        <inpute type="hidden" name="userName" value=@post.User.Username />
+                         <inpute type="hidden" name="AvatarUrl" value=@post.User.AvatarUrl />
+
                     }
-
-                    <div id="comment-box"> </div>
+                    <div class="form-group">
+                        <div >
+                            <input type="submit" value="Create" class="btn btn-default" />
+                        </div>
+                    </div>
                 </div>
+
             </div>
-        }
+        </div>
+    }
 
     <ul class="pager">
         @if (ViewBag.PagePrevious == 0)
@@ -136,3 +162,10 @@
     @*TODO - Пейджинг за коментарите, тъй като може да са 5 коментара, а може и 500. Навигацията между следващи и предишни коментари става чрез Next/Preview бутоните*@
 
 </div>
+
+<script>
+    $("#create-comment-button").on("click", function(ev) {
+        $("#create-comment-box").
+        show();
+    });
+ </script>

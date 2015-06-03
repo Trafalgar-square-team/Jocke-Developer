@@ -13,6 +13,7 @@
         public string AvatarUrl { get; set; }
 
         public string Email { get; set; }
+
         public string City { get; set; }
 
         public DateTime? Birthday { get; set; }

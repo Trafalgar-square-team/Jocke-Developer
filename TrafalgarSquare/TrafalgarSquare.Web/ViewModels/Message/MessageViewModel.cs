@@ -1,10 +1,9 @@
 ﻿namespace TrafalgarSquare.Web.ViewModels.Message
 {
     using System;
-    using Automapper;
-    using User;
+    using TrafalgarSquare.Web.ViewModels.User;
 
-    public class MessageViewModel : IMapFrom<Models.Message>
+    public class MessageViewModel
     {
         public int Id { get; set; }
 

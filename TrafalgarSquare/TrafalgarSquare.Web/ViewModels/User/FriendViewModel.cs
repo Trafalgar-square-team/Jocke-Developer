@@ -12,8 +12,6 @@
 
         public string Id { get; set; }
 
-        public Models.User Friend { get; set; }
-
         public string Username { get; set; }
 
         public string AvatarUrl { get; set; }

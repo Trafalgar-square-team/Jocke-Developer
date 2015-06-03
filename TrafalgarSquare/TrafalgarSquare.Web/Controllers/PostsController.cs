@@ -32,7 +32,7 @@ namespace TrafalgarSquare.Web.Controllers
             ViewBag.Title = category.Name;
             ViewBag.CategoryMachineName = categoryMachineName;
             ViewBag.CurrentPage = page;
-            var posts = GetPostsByCategory(category.Id, page).ToList();
+            var posts = GetPostsByCategory(category.Id, page).OrderByDescending(p=>p.CreatedDateTime).ToList();
 
             return View(posts);
         }

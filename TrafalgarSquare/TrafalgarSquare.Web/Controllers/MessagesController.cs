@@ -1,6 +1,4 @@
-﻿using AutoMapper.QueryableExtensions;
-
-namespace TrafalgarSquare.Web.Controllers
+﻿namespace TrafalgarSquare.Web.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -25,8 +23,7 @@ namespace TrafalgarSquare.Web.Controllers
         public ActionResult Index()
         {
             var userId = User.Identity.GetUserId();
-            var usersFriends = this.Data.UsersFriends
-                .All()
+            var usersFriends = this.Data.UsersFriends.All()
                 .Where(x => x.UserId == userId && x.IsAccepted == true && x.Friend.Friends.Any(z => z.FriendId == userId && z.IsAccepted == true))
                 .Select(x => new ChatFriendViewModel()
                 {
@@ -49,29 +46,21 @@ namespace TrafalgarSquare.Web.Controllers
             var allMessages = this.Data.Messages.All()
                 .Where(x => (x.SenderId == senderId && x.RecepientId == userId) || (x.SenderId == userId && x.RecepientId == senderId))
                 .OrderBy(x => x.SendDateTime);
+            var model = allMessages.Select(x => new MessageViewModel()
+                {
+                    Id = x.Id,
+                    Sender = new UserViewModel()
+                    {
+                        Id = x.Sender.Id,
+                        AvatarUrl = x.Sender.AvatarUrl,
+                        Username = x.Sender.UserName
+                    },
+                    SendDateTime = x.SendDateTime,
+                    Text = x.Text,
+                    SenderId = x.SenderId,
+                }).ToList();
 
-            //var model = allMessages.Select(x => new MessageViewModel()
-            //    {
-            //        Id = x.Id,
-            //        Sender = new UserViewModel()
-            //        {
-            //            Id = x.Sender.Id,
-            //            AvatarUrl = x.Sender.AvatarUrl,
-            //            Username = x.Sender.UserName
-            //        },
-            //        SendDateTime = x.SendDateTime,
-            //        Text = x.Text,
-            //        SenderId = x.SenderId,
-            //    }).ToList();
-            var model = allMessages
-                .Project()
-                .To<MessageViewModel>()
-                .ToList();
-
-            allMessages
-                .Where(x => x.SenderId == senderId)
-                .ForEach(s => s.IsSeen = true);
-
+            allMessages.Where(x => x.SenderId == senderId).ForEach(s => s.IsSeen = true);
             this.Data.SaveChanges();
 
             return this.PartialView(model);

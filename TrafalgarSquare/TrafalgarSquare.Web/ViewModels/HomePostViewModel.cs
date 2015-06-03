@@ -1,11 +1,9 @@
 ﻿namespace TrafalgarSquare.Web.ViewModels
 {
     using System;
-    using Automapper;
     using Models;
-    using User;
 
-    public class HomePostViewModel : IMapFrom<Post>
+    public class HomePostViewModel
     {
         public int Id { get; set; }
 
@@ -21,7 +19,7 @@
 
         public string PostOwnerId { get; set; }
 
-        public virtual UserViewModel Owner { get; set; }
+        public virtual Models.User PostOwner { get; set; }
 
         public int CommentsCount { get; set; }
 

@@ -12,7 +12,7 @@
                 <a href="@Url.Action("PostById", "Posts", new {id = Model.Id})">@Model.Title</a> <span class="badge"> @Model.LikesCount <small>likes</small></span>
             </div>
             <div class="panel-body">
-                <em>Posted by:</em> <a href="@Url.Action("Index", "Users", new { username = Model.Owner.Username })">@Model.Owner.Username</a> | <em>Posted on:</em> @string.Format("{0:dd MMM yyyy}", Model.CreatedDateTime)
+                <em>Posted by:</em> <a href="@Url.Action("Index", "Users", new { username = Model.PostOwner.UserName })">@Model.PostOwner.UserName</a> | <em>Posted on:</em> @string.Format("{0:dd MMM yyyy}", Model.CreatedDateTime)
             </div>
             <ul class="nav nav-pills">
                 <li>

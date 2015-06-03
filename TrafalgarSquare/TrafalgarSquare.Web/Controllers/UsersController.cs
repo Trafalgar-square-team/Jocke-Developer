@@ -36,32 +36,40 @@
                 showNumber = 10;
             }
 
-            //var usersWithRank = this.Data.Users.All()
-            //    .GroupBy(z => z.Posts.SelectMany(x => x.LikesPost).Count())
-            //    .OrderByDescending(z => z.Key)
-            //    .AsEnumerable()
-            //    .SelectMany((grouping, i) => grouping.Select(s => new TopUserViewModel()
-            //    {
-            //        Id = s.Id,
-            //        AvatarUrl = s.AvatarUrl,
-            //        Username = s.UserName,
-            //        Rank = i + 1,
-            //        TotalLikes = grouping.Key
-            //    }))
-            //    .ToList();
+            //var users = this.Data.Users
+            //   .All()
+            //   .GroupJoin(
+            //       this.Data.PostsLikes.All(),
+            //       x => x.Id,
+            //       postLikes => postLikes.Post.PostOwnerId,
+            //       (user, postLikes) => new
+            //       {
+            //           user = user,
+            //           postLikes = postLikes.Count()
+            //       })
+            //   .OrderByDescending(x => x.postLikes)
+            //   .ThenBy(x => x.user.UserName)
+            //   .Take((int)showNumber)
+            //   .Select(x => new TopUserViewModel()
+            //   {
+            //       Id = x.user.Id,
+            //       AvatarUrl = x.user.AvatarUrl,
+            //       Username = x.user.UserName,
+            //       TotalLikes = x.postLikes,
+            //   }).ToList();
 
             var usersWithRank = this.Data.Users.All()
                 .GroupBy(z => z.Posts.SelectMany(x => x.LikesPost).Count())
                 .OrderByDescending(z => z.Key)
                 .AsEnumerable()
-                .SelectMany(
-                    (grouping, rank) => grouping.Select(user => AutoMapper.Mapper.Map<User, TopUserViewModel>(
-                        user,
-                        opt =>
-                        {
-                            opt.BeforeMap((src, dest) => dest.Rank = rank + 1);
-                            opt.AfterMap((src, dest) => dest.TotalLikes = grouping.Key);
-                        })))
+                .SelectMany((grouping, i) => grouping.Select(s => new TopUserViewModel()
+                {
+                    Id = s.Id,
+                    AvatarUrl = s.AvatarUrl,
+                    Username = s.UserName,
+                    Rank = i + 1,
+                    TotalLikes = grouping.Key
+                }))
                 .ToList();
 
             return this.View(usersWithRank);
@@ -298,8 +306,6 @@
                     Username = x.Friend.UserName,
                     IsAcceptedFriendShip = x.Friend.Friends.Any(z => z.FriendId == x.UserId && z.IsAccepted == true)
                 });
-
-
             if (User.Identity.GetUserId() != id)
             {
                 friends = friends.Where(x => x.IsAcceptedFriendShip == true);
@@ -323,53 +329,28 @@
             return this.Json(user, JsonRequestBehavior.AllowGet);
         }
 
-        [AllowAnonymous]
-        public ActionResult IsNameTaken(string username)
-        {
-            Thread.Sleep(3000);
-            var users = this.Data
-                .Users
-                .All()
-                .Where(x => x.UserName == username);
-
-            return Json(!users.Any());
-        }
-
         private UserProfileViewModel UserProfileData(string username)
         {
             var userId = User.Identity.GetUserId();
-            //var user = this.Data.Users
-            //    .All()
-            //    .Where(x => x.UserName == username)
-            //    .Select(x => new UserProfileViewModel()
-            //    {
-            //        Id = x.Id,
-            //        AvatarUrl = x.AvatarUrl,
-            //        Username = x.UserName,
-            //        Email = x.Email,
-            //        Birthday = x.Birthday,
-            //        City = x.City,
-            //        Gender = x.Gender.ToString(),
-            //        Name = x.Name,
-            //        RegisterDate = x.RegisterDate,
-            //        PostCount = x.Posts.Count(),
-            //        CommentsCount = x.Comments.Count(),
-            //        IsOwned = userId == x.Id,
-            //    })
-            //    .FirstOrDefault();
-
             var user = this.Data.Users
                 .All()
                 .Where(x => x.UserName == username)
-                .AsEnumerable()
-                .Select(x => AutoMapper.Mapper.Map<User, UserProfileViewModel>(
-                        x,
-                        opt =>
-                        {
-                            opt.AfterMap((src, dest) => dest.IsOwned = userId == x.Id);
-                            opt.AfterMap((src, dest) => dest.Gender = x.Gender.ToString());
-                        }))
-               .FirstOrDefault();
+                .Select(x => new UserProfileViewModel()
+                {
+                    Id = x.Id,
+                    AvatarUrl = x.AvatarUrl,
+                    Username = x.UserName,
+                    Email = x.Email,
+                    Birthday = x.Birthday,
+                    City = x.City,
+                    Gender = x.Gender.ToString(),
+                    Name = x.Name,
+                    RegisterDate = x.RegisterDate,
+                    PostCount = x.Posts.Count(),
+                    CommentsCount = x.Comments.Count(),
+                    IsOwned = userId == x.Id,
+                })
+                .FirstOrDefault();
 
             if (user == null)
             {
@@ -393,6 +374,17 @@
             }
 
             return user;
+        }
+
+        public ActionResult IsNameTaken(string username)
+        {
+            Thread.Sleep(3000);
+            var users = this.Data
+                .Users
+                .All()
+                .Where(x => x.UserName == username);
+
+            return Json(!users.Any());
         }
     }
 }

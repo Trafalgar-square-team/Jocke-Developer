@@ -1,11 +1,8 @@
-﻿
-namespace TrafalgarSquare.Web.ViewModels
+﻿namespace TrafalgarSquare.Web.ViewModels
 {
-    using Automapper;
     using Models;
-    using TrafalgarSquare.Web.ViewModels.User;
 
-    public class TopPostViewModel : IMapFrom<Post>
+    public class TopPostViewModel
     {
         public int Id { get; set; }
 
@@ -13,7 +10,9 @@ namespace TrafalgarSquare.Web.ViewModels
 
         public PostResources PostResources { get; set; }
 
-        public UserViewModel Owner { get; set; }
+        public string PostOwnerId { get; set; }
+
+        public virtual Models.User PostOwner { get; set; }
 
         public int LikesCount { get; set; }
     }

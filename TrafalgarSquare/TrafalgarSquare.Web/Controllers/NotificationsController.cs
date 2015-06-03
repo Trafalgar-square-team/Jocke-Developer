@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Web;
     using System.Web.Mvc;
-    using AutoMapper.QueryableExtensions;
     using Data;
     using Microsoft.AspNet.Identity;
     using TrafalgarSquare.Web.ViewModels;
@@ -21,32 +20,25 @@
         public ActionResult Index()
         {
             var userId = User.Identity.GetUserId();
-            //var notifications = this.Data.Notifications
-            //    .All()
-            //    .Where(x => x.RecepientId == userId)
-            //    .OrderByDescending(x => x.SendDateTime)
-            //    .Select(x => new NotificationViewModel()
-            //    {
-            //        Id = x.Id,
-            //        Text = x.Text,
-            //        SendDateTime = x.SendDateTime,
-            //        RecepientId = x.RecepientId,
-            //        SenderId = x.SenderId,
-            //        Sender = new UserViewModel()
-            //        {
-            //            Id = x.Sender.Id,
-            //            AvatarUrl = x.Sender.AvatarUrl,
-            //            Username = x.Sender.UserName
-            //        },
-            //        IsSeen = x.IsSeen
-            //    })
-            //    .ToList();
             var notifications = this.Data.Notifications
                 .All()
                 .Where(x => x.RecepientId == userId)
                 .OrderByDescending(x => x.SendDateTime)
-                .Project()
-                .To<NotificationViewModel>()
+                .Select(x => new NotificationViewModel()
+                {
+                    Id = x.Id,
+                    Text = x.Text,
+                    SendDateTime = x.SendDateTime,
+                    RecepientId = x.RecepientId,
+                    SenderId = x.SenderId,
+                    Sender = new UserViewModel()
+                    {
+                        Id = x.Sender.Id,
+                        AvatarUrl = x.Sender.AvatarUrl,
+                        Username = x.Sender.UserName
+                    },
+                    IsSeen = x.IsSeen
+                })
                 .ToList();
 
             return this.View(notifications);

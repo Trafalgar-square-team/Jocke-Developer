@@ -1,13 +1,11 @@
 ﻿namespace TrafalgarSquare.Web.Controllers
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Web.Mvc;
-    using AutoMapper;
     using Data;
-    using Microsoft.AspNet.Identity;
-    using Models;
     using ViewModels;
-    using ViewModels.User;
+    using Microsoft.AspNet.Identity;
 
     public class HomeController : BaseController
     {
@@ -29,19 +27,23 @@
                     postComments => postComments.PostId,
                     (post, postComments) => new
                     {
-                        post,
+                        post = post,
                         postComments = postComments.Count()
                     })
-                 .AsEnumerable()
-                 .Select(x => Mapper.Map<Post, HomePostViewModel>(
-                     x.post,
-                     opts =>
-                     {
-                         //opts.CreateMissingTypeMaps = true;
-                         opts.AfterMap((s, d) => d.LikesCount = x.post.LikesPost.Count);
-                         opts.BeforeMap((s, d) => d.Owner = Mapper.Map<User, UserViewModel>(x.post.PostOwner));
-                     }))
-                .ToList();
+                .Select(x => new HomePostViewModel()
+                {
+                    Id = x.post.Id,
+                    Title = x.post.Title,
+                    PostResources = x.post.Resource,
+                    CreatedDateTime = x.post.CreatedDateTime,
+                    PostOwnerId = x.post.PostOwnerId,
+                    // TODO: add UserViewModel
+                    PostOwner = x.post.PostOwner,
+                    CategoryId = x.post.CategoryId,
+                    Category = x.post.Category,
+                    LikesCount = x.post.LikesPost.Count,
+                    CommentsCount = x.postComments,
+                });
 
             var model = new HomeViewModel()
             {
