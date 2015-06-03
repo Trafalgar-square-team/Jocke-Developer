@@ -1,30 +1,38 @@
 ﻿@model IEnumerable<TrafalgarSquare.Web.ViewModels.User.ChatFriendViewModel>
-<div>
-    <div class="col-md-9">
-        <div class="row">
-            <h2><a href=""></a></h2>
-        </div>
-        <div>
-            <div class="row" id="messages"></div>
+<div id="wrapper">
+  
+        <div class="col-md-9">
             <div class="row">
-                <textarea class="col-md-10" id="personal-message" placeholder="your message..."></textarea>
-                <a class="col-md-2 btn btn-info" id="send-message-button">Send</a>
+            <ul class="breadcrumb">
+              <li class="active">Chat with other Users:</li>
+           
             </div>
+            <div>
+                <div class="row" id="messages"></div>
+                <div class="row">
+                    <textarea class="col-md-9" id="personal-message" placeholder="Write here your message..."></textarea>
+                    <a class="col-md-2 btn btn-info" id="send-message-button">Send</a>
+                </div>
+            </div>
+             </ul>
         </div>
-    </div>
-    <div class="col-md-3">
-        <h2>Friends:</h2>
-        @if (!@Model.Any())
-        {
-            <p>You don't have friends to send message.</p>
-        }
-        else
-        {
-            <ul class="list-group chatUsersUl">
-                @Html.DisplayFor(z => z)
+        <div class="col-md-3">
+            <ul class="breadcrumb">
+              <li class="active">Your Friends:</li>
             </ul>
-        }
-    </div>
+
+            @if (!@Model.Any())
+            {
+                <p class="text-warning">You don't have added friends to send them a message.</p>
+            }
+            else
+            {
+                <ul class="list-group chatUsersUl">
+                    @Html.DisplayFor(z => z)
+                </ul>
+            }
+        </div>
+
 </div>
 
 
