@@ -1,0 +1,99 @@
+﻿@using TrafalgarSquare.Models
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    @Scripts.Render("~/Scripts/jquery.signalR-2.2.0.js")
+    @Scripts.Render("~/signalr/hubs")
+    <script>
+        $(document).ready(function () {
+            $.connection.hub.start();
+
+            var chat = $.connection.chat;
+            chat.client.addMessageNotification = addMessageNotification;
+            chat.client.addNotification = addNotification;
+        });
+
+        function addMessageNotification() {
+            $('#global-unseen-messages-count').text(parseInt($('#global-unseen-messages-count').text()) + 1);
+        }
+
+        function addNotification() {
+            $('#global-notifications-count').text(parseInt($('#global-notifications-count').text()) + 1);
+        }
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"></a><a class="navbar-brand" href="/">Joke Developer</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="/admin/posts">Posts</a>
+                </li>
+                <li>
+                    <a href="/admin/comments">Comments</a>
+                </li>
+                <li>
+                    <a href="/admin/users">Users</a>
+                </li>
+                <li>
+                    <a href="/">Back to frontend</a>
+                </li>
+            </ul>
+            <ul id="user-nav-pannel" class="nav navbar-nav navbar-right">
+                <li>@Html.Partial("_AdminLoginPartial")</li>
+            </ul>
+        </div>
+    </div>
+</nav>
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-dismissible alert-danger">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Oh snap!</strong> @TempData["Error"]
+        </div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-dismissible alert-info">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Heads up!</strong> @TempData["Success"]
+        </div>
+    }
+    
+    <div class="container">
+            <div class="row">
+                <div class="col-md-12" style="margin-top: 40px">
+                    @RenderBody()
+                </div>
+            </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer text-center">
+        <ul class="breadcrumb">
+            <li class="active">Joke Developer - SoftUni ASP.NET MVC Course teamwork project 2015</li>
+        </ul>
+    </footer>
+</body>
+</html>
