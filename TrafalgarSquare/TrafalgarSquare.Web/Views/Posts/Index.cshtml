@@ -113,7 +113,6 @@
 
                     <img id="loading-status" src="/Content/loader-anim.gif" alt="" style="display: none" width="35" />
                     <div id="new-comment-preview"></div>
-
                 }
 
                 @Html.Partial("~/Views/Comments/_CreateCommentPartialView.cshtml", new CreateCommentBindingModel() { CommentText = "", PostId = @post.Id })
@@ -127,6 +126,7 @@
                         };
                     </script>
                 }
+
 
                 <div id="comment-box"></div>
 

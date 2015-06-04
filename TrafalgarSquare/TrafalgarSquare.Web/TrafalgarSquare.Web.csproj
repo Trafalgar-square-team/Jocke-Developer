@@ -223,6 +223,7 @@
     <Compile Include="Hubs\CustomUserIdProvider.cs" />
     <Compile Include="ViewModels\AddCommentViewModel.cs" />
     <Compile Include="ViewModels\CommentCreateModel.cs" />
+    <Compile Include="ViewModels\CreateCommentBindingModel.cs" />
     <Compile Include="ViewModels\NotificationViewModel.cs" />
     <Compile Include="ViewModels\PostCreateBindModel.cs" />
     <Compile Include="ViewModels\PostLikesViewModel.cs" />
@@ -347,6 +348,9 @@
     <Content Include="Views\Comments\_CommentsDetailsPartial.cshtml" />
     <Content Include="Views\Posts\Index.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
+    <Content Include="Views\Comments\_CreateCommentPartialView.cshtml">
+      <SubType>Code</SubType>
+    </Content>
     <None Include="Views\Manage\ChangeAvatar.cshtml" />
     <None Include="Views\Manage\ChangeBirthday.cshtml" />
     <None Include="Views\Manage\ChangeCity.cshtml" />

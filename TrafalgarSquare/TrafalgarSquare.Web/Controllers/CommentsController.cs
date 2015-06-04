@@ -121,7 +121,6 @@ namespace TrafalgarSquare.Web.Controllers
 
             Data.SaveChanges();
 
-
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
     }
