@@ -59,8 +59,14 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="/Users/TopUsers/" class="glyphicon glyphicon-stats"> Top Users</a>
+                    <a href="/Users/TopUsers/"><span class="glyphicon glyphicon-stats"></span> top users</a>
                 </li>
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
+                {
+                    <li>
+                        <a href="/Admin/Posts">Administrate</a>
+                    </li>
+                }
             </ul>
             <ul id="user-nav-pannel" class="nav navbar-nav navbar-right">
                 <li>@Html.Partial("_LoginPartial")</li>
