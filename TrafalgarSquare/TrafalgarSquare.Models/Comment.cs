@@ -6,10 +6,6 @@ namespace TrafalgarSquare.Models
 
     public class Comment
     {
-        public Comment()
-        {
-        }
-
         [Key]
         public int Id { get; set; }
 

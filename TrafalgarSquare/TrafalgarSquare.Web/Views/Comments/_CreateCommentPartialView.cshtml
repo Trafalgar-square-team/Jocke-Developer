@@ -1,0 +1,24 @@
+﻿@model TrafalgarSquare.Web.ViewModels.CreateCommentBindingModel
+
+<div id="create-comment-box" style="display: none">
+    @using (Ajax.BeginForm("Create", "Comments", new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        OnSuccess = "commentCreatedSuccess",
+                    }))
+    {
+
+        @Html.ValidationMessageFor(x => x.CommentText)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <br/>
+        @Html.TextAreaFor(m => m.CommentText)
+        
+        @Html.HiddenFor(x => x.PostId)
+        <div class="form-group">
+            <div>
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    }
+</div>
+

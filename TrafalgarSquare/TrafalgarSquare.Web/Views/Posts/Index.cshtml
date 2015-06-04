@@ -1,5 +1,6 @@
 ﻿@using System.Activities.Statements
 @using Microsoft.AspNet.Identity
+@using TrafalgarSquare.Models
 @using TrafalgarSquare.Web.ViewModels;
 @model List<PostViewModel>
 <div id="wrapper">
@@ -84,7 +85,6 @@
                     <iframe width="640" height="390" src="@post.Resource.VideoUrl" frameborder="0" allowfullscreen></iframe>
                 }
             </div>
-
             @*===============COMMENTS*@
             <div class="panel-footer-custom">
 
@@ -92,13 +92,13 @@
                 {
                     <h4>Comments <span>(@post.CommentsCount)</span></h4>
 
-                    <a href="#" class="btn btn-success disabled">View Comments</a>
-                    <a href="#" class="btn btn-default" id="create-comment-button">Post New Comment</a>
+                    <a href="" class="btn btn-success disabled" id="view-comments">View Comments</a>
+                    <a href="" class="btn btn-default" id="create-comment-button">Post New Comment</a>
+
                 }
                 else
                 {
                     <h4>Comments <span>(@post.CommentsCount)</span></h4>
-
 
                     @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new { id = @post.Id },
                         new AjaxOptions
@@ -108,7 +108,7 @@
                             LoadingElementId = "loading-status"
                         }, new { @class = "btn btn-success" })
 
-                    <a href="#" class="btn btn-default" id="create-comment-button">Post New Comment</a>
+                    <a class="btn btn-default" id="create-comment-button">Post New Comment</a>
                     <br /><br />
 
                     <img id="loading-status" src="/Content/loader-anim.gif" alt="" style="display: none" width="35" />
@@ -116,26 +116,19 @@
 
                 }
 
-                <div id="comment-box"> </div>
-                <div id="create-comment-box" style="display: none">
-                    @using (Ajax.BeginForm("CreateComment", new AjaxOptions
-                    {
-                        UpdateTargetId = "new-comment-preview",
-                        InsertionMode = InsertionMode.Replace
-                    }))
-                    {
-                        <textarea name="newCommentText" placeholder="your comment..."></textarea>
-                        <inpute type="hidden" name="userId" value=@post.User.Id />
-                        <inpute type="hidden" name="userName" value=@post.User.Username />
-                        <inpute type="hidden" name="AvatarUrl" value=@post.User.AvatarUrl />
+                @Html.Partial("~/Views/Comments/_CreateCommentPartialView.cshtml", new CreateCommentBindingModel() { CommentText = "", PostId = @post.Id })
+                @section Scripts{
+                    @*<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>*@
+                    <script>
+                        function commentCreatedSuccess() {
+                            $("#create-comment-box").hide();
+                            $('#CommentText').val('');
+                            //$('#view-comments').trigger("click");
+                        };
+                    </script>
+                }
 
-                    }
-                    <div class="form-group">
-                        <div>
-                            <input type="submit" value="Create" class="btn btn-default" />
-                        </div>
-                    </div>
-                </div>
+                <div id="comment-box"></div>
 
             </div>
         </div>
@@ -164,8 +157,13 @@
 </div>
 
 <script>
-    $("#create-comment-button").on("click", function(ev) {
-        $("#create-comment-box").
-        show();
+    $("#create-comment-button").on("click", function (ev) {
+        var el = $("#create-comment-box");
+        if (el.css('display') == 'none') {
+            $("#create-comment-box").show();
+
+        } else {
+            $("#create-comment-box").hide();
+        }
     });
 </script>
