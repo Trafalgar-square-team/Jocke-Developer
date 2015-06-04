@@ -71,6 +71,7 @@
 
         [System.Web.Mvc.Authorize]
         [HttpPost]
+        [Route("users/addFriend/{id}")]
         public ActionResult AddFriend(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -186,6 +187,7 @@
             return this.PartialView(model);
         }
 
+        [Route("users/AcceptFriendRequest/{id}")]
         [System.Web.Mvc.Authorize]
         public ActionResult AcceptFriendRequest(string id)
         {
@@ -237,6 +239,7 @@
             return this.View();
         }
 
+        [Route("users/RemoveFriend/{id}")]
         [System.Web.Mvc.Authorize]
         public ActionResult RemoveFriend(string id)
         {
@@ -271,6 +274,7 @@
             return new EmptyResult();
         }
 
+        [Route("users/GetFriends/{id}")]
         [System.Web.Mvc.Authorize]
         public ActionResult GetFriends(string id)
         {
@@ -317,6 +321,7 @@
             return this.View(friends);
         }
 
+        [Route("users/GetFriendStatus/{id}")]
         [System.Web.Mvc.Authorize]
         public JsonResult GetFriendStatus(string id)
         {
@@ -336,6 +341,7 @@
             return this.Json(!users.Any());
         }
 
+        [Route("users/UserProfileData/{username}")]
         private UserProfileViewModel UserProfileData(string username)
         {
             var userId = User.Identity.GetUserId();
