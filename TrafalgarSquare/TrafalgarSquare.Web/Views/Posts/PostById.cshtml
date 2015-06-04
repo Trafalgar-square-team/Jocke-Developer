@@ -77,30 +77,64 @@
 
 
     @*===============COMMENTS*@
+    
+    <div class="panel-footer-custom">
+
+        @if (@Model.CommentsCount == 0)
+        {
+            <h4>Comments <span>(@Model.CommentsCount)</span></h4>
+
+            <a href="" class="btn btn-success disabled" id="view-comments">View Comments</a>
+            <a href="" class="btn btn-default" id="create-comment-button">Post New Comment</a>
+
+        }
+        else
+        {
+            <h4>Comments <span>(@Model.CommentsCount)</span></h4>
+
+            @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new { id = @Model.Id },
+                        new AjaxOptions
+                        {
+                            InsertionMode = InsertionMode.Replace,
+                            UpdateTargetId = "comment-box",
+                            LoadingElementId = "loading-status"
+                        }, new { @class = "btn btn-success" })
+
+            <a class="btn btn-default" id="create-comment-button">Post New Comment</a>
+            <br /><br />
+
+            <img id="loading-status" src="/Content/loader-anim.gif" alt="" style="display: none" width="35" />
+            <div id="new-comment-preview"></div>
+        }
+
+        @Html.Partial("~/Views/Comments/_CreateCommentPartialView.cshtml", new CreateCommentBindingModel() { CommentText = "", PostId = @Model.Id })
+        @section Scripts{
+            @*<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>*@
+            <script>
+                function commentCreatedSuccess() {
+                    $("#create-comment-box").hide();
+                    $('#CommentText').val('');
+                    //$('#view-comments').trigger("click");
+                };
+            </script>
+        }
 
 
-    @if (@Model.CommentsCount == 0)
-    {
-        <h2>Comments <span>(@Model.CommentsCount)</span></h2>
+        <div id="comment-box"></div>
 
-        <a href="#" class="btn btn-success disabled">View Comments</a>
-        <a href="#" class="btn btn-default">Post New Comment</a>
-    }
-    else
-    {
-        <h2>Comments<span>(@Model.CommentsCount)</span></h2>
+    </div>
 
-        @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new {id = @Model.Id},
-            new AjaxOptions
-            {
-                InsertionMode = InsertionMode.Replace,
-                UpdateTargetId = "comment-box"
-            }, new {@class = "btn btn-success"})
 
-        <a href="#" class="btn btn-default">Post New Comment</a>
-        <br/><br/>
-    }
+</div>
 
-    <div id="comment-box"> </div>
+<script>
+    $("#create-comment-button").on("click", function (ev) {
+        var el = $("#create-comment-box");
+        if (el.css('display') == 'none') {
+            $("#create-comment-box").show();
 
-</div><!-- wrapper tag end -->
+        } else {
+            $("#create-comment-box").hide();
+        }
+    });
+</script>
