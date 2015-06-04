@@ -78,8 +78,10 @@ namespace TrafalgarSquare.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("post/create")]
-        public ActionResult CreatePost([Bind(Include = "Id,Title,Text,Resource,CategoryId,CreatedDateTime,IsReported")] Post post)
+        public ActionResult CreatePost([Bind(Include = "Id,Title,Text,Resource,CategoryId,IsReported")] Post post)
         {
+            post.CreatedDateTime = DateTime.Now;
+
             if (ModelState.IsValid)
             {
                 post.PostOwnerId = User.Identity.GetUserId();
@@ -115,7 +117,7 @@ namespace TrafalgarSquare.Web.Controllers
         [ValidateAntiForgeryToken]
         [Authorize]
         [Route("post/edit/{id}")]
-        public ActionResult EditPost([Bind(Include = "Id,Title,Text,Resource,CategoryId,CreatedDateTime,IsReported")] Post post)
+        public ActionResult EditPost([Bind(Include = "Id,Title,Text,Resource,CategoryId,IsReported")] Post post)
         {
             if (ModelState.IsValid)
             {
