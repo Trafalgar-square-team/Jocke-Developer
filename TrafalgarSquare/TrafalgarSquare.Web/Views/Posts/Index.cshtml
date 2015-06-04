@@ -46,8 +46,6 @@
                 {
                     <div class="text-left row">
                         <div class="col-xs-12">
-                            <a href="#" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>
-                            @*<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-bell"></span> Report abuse</a>*@
                             @if (User.Identity.GetUserId() == post.User.Id)
                             {
                                 <a href="@Url.Action("EditPost", new {id = post.Id})" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
@@ -58,7 +56,11 @@
 
                 }
 
-                <h2 class="text-warning">@post.Title</h2>
+                <h2 class="text-warning">
+                    <a href="/post/@post.Id">
+                        @post.Title
+                    </a>
+                </h2>
 
                 <p>@post.Text</p>
                 <br>
@@ -85,52 +87,6 @@
                     <iframe width="640" height="390" src="@post.Resource.VideoUrl" frameborder="0" allowfullscreen></iframe>
                 }
             </div>
-            @*===============COMMENTS*@
-            <div class="panel-footer-custom">
-
-                @if (@post.CommentsCount == 0)
-                {
-                    <h4>Comments <span>(@post.CommentsCount)</span></h4>
-
-                    <a href="" class="btn btn-success disabled" id="view-comments">View Comments</a>
-                    <a href="" class="btn btn-default" id="create-comment-button">Post New Comment</a>
-
-                }
-                else
-                {
-                    <h4>Comments <span>(@post.CommentsCount)</span></h4>
-
-                    @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new { id = @post.Id },
-                        new AjaxOptions
-                        {
-                            InsertionMode = InsertionMode.Replace,
-                            UpdateTargetId = "comment-box",
-                            LoadingElementId = "loading-status"
-                        }, new { @class = "btn btn-success" })
-
-                    <a class="btn btn-default" id="create-comment-button">Post New Comment</a>
-                    <br /><br />
-
-                    <img id="loading-status" src="/Content/loader-anim.gif" alt="" style="display: none" width="35" />
-                    <div id="new-comment-preview"></div>
-                }
-
-                @Html.Partial("~/Views/Comments/_CreateCommentPartialView.cshtml", new CreateCommentBindingModel() { CommentText = "", PostId = @post.Id })
-                @section Scripts{
-                    @*<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>*@
-                    <script>
-                        function commentCreatedSuccess() {
-                            $("#create-comment-box").hide();
-                            $('#CommentText').val('');
-                            //$('#view-comments').trigger("click");
-                        };
-                    </script>
-                }
-
-
-                <div id="comment-box"></div>
-
-            </div>
         </div>
     }
 
@@ -155,15 +111,3 @@
     @*TODO - Пейджинг за коментарите, тъй като може да са 5 коментара, а може и 500. Навигацията между следващи и предишни коментари става чрез Next/Preview бутоните*@
 
 </div>
-
-<script>
-    $("#create-comment-button").on("click", function (ev) {
-        var el = $("#create-comment-box");
-        if (el.css('display') == 'none') {
-            $("#create-comment-box").show();
-
-        } else {
-            $("#create-comment-box").hide();
-        }
-    });
-</script>

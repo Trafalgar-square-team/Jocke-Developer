@@ -1,98 +1,107 @@
-﻿@using TrafalgarSquare.Web.ViewModels;
+﻿@using Microsoft.AspNet.Identity
+@using TrafalgarSquare.Web.ViewModels;
 @model PostViewModel
-
 <div id="wrapper">
-    <h1 class="text-warning">@Model.Title</h1>
-    <hr/>
-
-    <ul class="nav nav-pills">
-        <li class="active">
-            @*<a href="FunnyPictures#"><span class="glyphicon glyphicon-star"> Joke Likes</span> <span class="badge">@Model.Likes</span></a>*@
-
-            @Html.ActionLink("Joke Likes", "LikesIndex", "Posts", new { id = @Model.Id }, new { @class = "glyphicon glyphicon-thumbs-up" })
 
 
-            @*<a href="/posts/LikePost/@Model.Id"><span aria-hidden="true"></span><span class="glyphicon glyphicon-thumbs-up"> Like this joke</span></a>*@
-
-            @Html.ActionLink("Like this joke", "LikePost", "Posts", new { id = @Model.Id }, new { @class = "glyphicon glyphicon-thumbs-up" })
-        </li>
-    </ul>
-
-    <p>@Model.Text</p>
-    <br/>
-
-    <div>
-
-        @if (!string.IsNullOrEmpty(@Model.User.AvatarUrl))
-        {
-            <div class="col-md-2">
-                <img src="@Model.User.AvatarUrl" alt="@Model.User.Username" style="max-width: 30px"/>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")">Home</a></li>
+        <li>@Model.Title</li>
+    </ol>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <a href="@Url.Action("CreatePost")" class="btn btn-success btn-xl"><span class="glyphicon glyphicon-plus"></span> Create Post</a>
+    }
+        <div class="post panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-sm-3">
+                        @if (!string.IsNullOrEmpty(Model.User.AvatarUrl))
+                        {
+                            <div class="col-md-2">
+                                <img src="@Model.User.AvatarUrl" alt="@Model.User.Username" style="max-height: 70px" />
+                            </div>
+                        }
+                    </div>
+                    <div class="col-sm-9">
+                        <div>
+                            <strong>Author: </strong><a href="@Url.Action("Index", "Users", new {username = Model.User.Username})">@Model.User.Username</a>
+                        </div>
+                        <div>
+                            <strong>Posted on: </strong><a href="#">@Model.CreatedDateTime</a>
+                        </div>
+                        <div>
+                            <strong>Likes</strong> <span class="badge">@Model.Likes</span>
+                        </div>
+                        @*<small>Is reported: @Model[i].IsReported</small>*@
+                    </div>
+                </div>
             </div>
-        }
-        <strong>Author: </strong><a href="#">@Model.User.Username</a> <br/>
-        <strong>Posted on: </strong><a href="#">@Model.CreatedDateTime</a>
-        <small>@*Is reported: @Model[i].IsReported*@</small>
-    </div>
+            <div class="panel-body text-center">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="text-left row">
+                        <div class="col-xs-12">
+                            <a href="/post/likeIndex/@Model.Id" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>
+                            <a href="/post/likePost/@Model.Id" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-thumbs-up"></span> Info</a>
+                            @*<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-bell"></span> Report abuse</a>*@
+                            @if (User.Identity.GetUserId() == Model.User.Id)
+                            {
+                                <a href="@Url.Action("EditPost", new {id = Model.Id})" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                                <a href="@Url.Action("DeletePost", new {id = Model.Id})" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-pencil"></span> Delete</a>
+                            }
+                        </div>
+                    </div>
 
-    <br>
+                }
 
-    <a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-bell"> Report something</span></a>
-    <a href="#" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"> Edit</span></a>
+                <h2 class="text-warning">
+                    <a href="/post/@Model.Id">
+                        @Model.Title
+                    </a>
+                </h2>
 
+                <p>@Model.Text</p>
+                <br>
 
-    @if (@Model.CommentsCount == 0)
-    {
-        <a href="/Categories/DeletePost/@Model.Id" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"> Delete</span></a>
-    }
-    else
-    {
-        <a href="/Categories/DeletePost/@Model.Id" class="btn btn-danger disabled btn-xs"><span class="glyphicon glyphicon-trash"> Delete</span></a>
-    }
+                @*==========LOADING PARTIAL CONTENT*@
 
-    <div class="post-box text-center">
-        <br>
+                @if (!string.IsNullOrEmpty(Model.Resource.FileUrl))
+                {
+                    <span>Attached file: </span>
+                    <a href="@Model.Resource.FileUrl">download</a>
+                }
+                @if (!string.IsNullOrEmpty(Model.Resource.PictureUrl))
+                {
+                    <img src="@Model.Resource.PictureUrl" class="img-thumbnail joke-box-image" alt="@Model.Title" />
+                }
+                @if (!string.IsNullOrEmpty(Model.Resource.VideoUrl))
+                {
+                    <!-- <video controls>
+                        <source src="@Model.Resource.VideoUrl" type="video/mp4">
+                        Your browser does not support HTML5 video.
+                        https://www.youtube.com/embed/2hUvgZ_djmk
+                    </video> -->
 
-        @*==========LOADING PARTIAL CONTENT*@
+                    <iframe width="640" height="390" src="@Model.Resource.VideoUrl" frameborder="0" allowfullscreen></iframe>
+                }
+            </div>
+            @*===============COMMENTS*@
+            <div class="panel-footer-custom">
 
-        @if (!string.IsNullOrEmpty(@Model.Resource.FileUrl))
-        {
-            <span>Attached file: </span>
-            <a href="@Model.Resource.FileUrl">download</a>
-        }
-        @if (!string.IsNullOrEmpty(@Model.Resource.PictureUrl))
-        {
-            <img src="@Model.Resource.PictureUrl" class="img-thumbnail joke-box-image" alt="@Model.Title"/>
-        }
-        @if (!string.IsNullOrEmpty(@Model.Resource.VideoUrl))
-        {
-            <!-- <video controls>
-                <source src="@Model.Resource.VideoUrl" type="video/mp4">
-                Your browser does not support HTML5 video.
-                https://www.youtube.com/embed/2hUvgZ_djmk
-            </video> -->
+                @if (Model.CommentsCount == 0)
+                {
+                    <h4>Comments <span>(@Model.CommentsCount)</span></h4>
 
-            <iframe width="640" height="390" src="@Model.Resource.VideoUrl" frameborder="0" allowfullscreen></iframe>
-        }
-    </div>
+                    <a href="" class="btn btn-success disabled" id="view-comments">View Comments</a>
+                    <a href="" class="btn btn-default" id="create-comment-button">Post New Comment</a>
 
+                }
+                else
+                {
+                    <h4>Comments <span>(@Model.CommentsCount)</span></h4>
 
-    @*===============COMMENTS*@
-    
-    <div class="panel-footer-custom">
-
-        @if (@Model.CommentsCount == 0)
-        {
-            <h4>Comments <span>(@Model.CommentsCount)</span></h4>
-
-            <a href="" class="btn btn-success disabled" id="view-comments">View Comments</a>
-            <a href="" class="btn btn-default" id="create-comment-button">Post New Comment</a>
-
-        }
-        else
-        {
-            <h4>Comments <span>(@Model.CommentsCount)</span></h4>
-
-            @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new { id = @Model.Id },
+                    @Ajax.ActionLink("View Comments", "DisplayById", "Comments", new { id = Model.Id },
                         new AjaxOptions
                         {
                             InsertionMode = InsertionMode.Replace,
@@ -100,30 +109,41 @@
                             LoadingElementId = "loading-status"
                         }, new { @class = "btn btn-success" })
 
-            <a class="btn btn-default" id="create-comment-button">Post New Comment</a>
-            <br /><br />
+                    <a class="btn btn-default" id="create-comment-button">Post New Comment</a>
+                    <br /><br />
 
-            <img id="loading-status" src="/Content/loader-anim.gif" alt="" style="display: none" width="35" />
-            <div id="new-comment-preview"></div>
+                    <img id="loading-status" src="/Content/loader-anim.gif" alt="" style="display: none" width="35" />
+                    <div id="new-comment-preview"></div>
+                }
+
+                @Html.Partial("~/Views/Comments/_CreateCommentPartialView.cshtml", new CreateCommentBindingModel() { CommentText = "", PostId = Model.Id })
+
+
+
+                <div id="comment-box"></div>
+
+            </div>
+        </div>
+
+    <ul class="pager">
+        @if (ViewBag.PagePrevious == 0)
+        {
+            <li class="previous disabled">
+                <a href="/@ViewBag.CategorieNameWithOutSpaces/@ViewBag.PagePrevious">← Previous Joke</a>
+            </li>
         }
-
-        @Html.Partial("~/Views/Comments/_CreateCommentPartialView.cshtml", new CreateCommentBindingModel() { CommentText = "", PostId = @Model.Id })
-        @section Scripts{
-            @*<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>*@
-            <script>
-                function commentCreatedSuccess() {
-                    $("#create-comment-box").hide();
-                    $('#CommentText').val('');
-                    //$('#view-comments').trigger("click");
-                };
-            </script>
+        else
+        {
+            <li class="previous">
+                <a href="/@ViewBag.CategorieNameWithOutSpaces/@ViewBag.PagePrevious">← Previous Joke</a>
+            </li>
         }
+        <li class="next">
+            <a href="@Url.Action("Index", new {categoryMachineName = ViewBag.CategoryMachineName, page = ViewBag.CurrentPage + 1})">Next Joke →</a>
+        </li>
+    </ul>
 
-
-        <div id="comment-box"></div>
-
-    </div>
-
+    @*TODO - Пейджинг за коментарите, тъй като може да са 5 коментара, а може и 500. Навигацията между следващи и предишни коментари става чрез Next/Preview бутоните*@
 
 </div>
 
@@ -137,4 +157,12 @@
             $("#create-comment-box").hide();
         }
     });
+
+
+    function commentCreatedSuccess() {
+        $("#create-comment-box").hide();
+        $('#CommentText').val('');
+        $('#view-comments').trigger("click");
+    };
+
 </script>

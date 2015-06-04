@@ -4,19 +4,19 @@
 <div class="row home-categoty-box">
     <div class="col-md-4">
         <span class="label label-default"><a href="#">@Model.Category.Name</a></span>
-        <a href="@Url.Action("PostById", "Posts", new {id = Model.Id})"><img class="img-thumbnail home-category-img" src="http://www.anyjokes.net/wp-content/uploads/2013/01/computer-games.jpg" alt=""></a>
+        <a href="/post/@Model.Id"><img class="img-thumbnail home-category-img" src="http://www.anyjokes.net/wp-content/uploads/2013/01/computer-games.jpg" alt=""></a>
     </div>
     <div class="col-md-8">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <a href="@Url.Action("PostById", "Posts", new {id = Model.Id})">@Model.Title</a> <span class="badge"> @Model.LikesCount <small>likes</small></span>
+                <a href="/post/@Model.Id">@Model.Title</a> <span class="badge"> @Model.LikesCount <small>likes</small></span>
             </div>
             <div class="panel-body">
                 <em>Posted by:</em> <a href="@Url.Action("Index", "Users", new { username = Model.Owner.Username })">@Model.Owner.Username</a> | <em>Posted on:</em> @string.Format("{0:dd MMM yyyy}", Model.CreatedDateTime)
             </div>
             <ul class="nav nav-pills">
                 <li>
-                    <a href="@Url.Action("PostById", "Posts", new {id = Model.Id})">COMMENTS <span class="badge">@Model.CommentsCount</span></a>
+                    <a href="/post/@Model.Id">COMMENTS <span class="badge">@Model.CommentsCount</span></a>
                 </li>
             </ul>
         </div>

@@ -21,6 +21,7 @@
         }
 
         [System.Web.Mvc.Authorize]
+        [Route("User/Profile/{username}")]
         public ActionResult Index(string username)
         {
             var user = this.UserProfileData(username);
@@ -29,6 +30,7 @@
         }
 
         [System.Web.Mvc.Authorize]
+        [Route("users/topUsers/{showNumber:int?}")]
         public ActionResult TopUsers(int? showNumber)
         {
             if (showNumber == null)

@@ -213,7 +213,7 @@ namespace TrafalgarSquare.Web.Controllers
 
         [Authorize]
         [Route("post/LikeIndex/{id}")]
-        public ActionResult LikePost(int id)
+        public ActionResult LikeIndex(int id)
         {
             var post = Data.Posts.GetById(id);
             var user = this.UserProfile;
@@ -235,15 +235,16 @@ namespace TrafalgarSquare.Web.Controllers
 
             Data.PostsLikes.SaveChanges();
 
-            return RedirectToAction("Index", "Home");
+            return Redirect("/post/" + id);
             //return RedirectToRoute("post", new{id = id});
         }
 
         [Route("post/LikePost/{id}")]
-        public ActionResult LikesIndex(int id)
+        public ActionResult LikePost(int id)
         {
             var post = Data.Posts.GetById(id);
             ViewBag.PostTitle = post.Title;
+            ViewBag.PostId = post.Id;
 
             var likes = this.Data.PostsLikes
                 .All().Select(PostLikesViewModel.ViewModel)
