@@ -71,7 +71,7 @@
 
         [System.Web.Mvc.Authorize]
         [HttpPost]
-        [Route("users/addFriend/{id}")]
+        [Route("users/addFriend")]
         public ActionResult AddFriend(string id)
         {
             if (string.IsNullOrWhiteSpace(id))

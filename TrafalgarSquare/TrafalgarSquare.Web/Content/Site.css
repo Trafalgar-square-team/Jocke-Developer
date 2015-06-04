@@ -128,18 +128,18 @@ select {
 
 #messages {
     width: 100%;
-    height: 20em;
+    height: 25em;
     overflow-y: scroll;
     overflow-x: hidden;
-    background-color: #93c54b;
+    background-color: white;
 }
 
 .message {
-    color: aqua;
+    color: #004200;
 }
 
     .message a {
-        color: red;
+        color: #FF8000;
     }
 
 .chat-user {
@@ -151,16 +151,20 @@ select {
 }
 
 .selectedChatUser {
-    background-color: #93c54b;
+    background-color: #FFFFFF;
 }
 
 .unseen-notification {
-    background-color: orangered;
+    background-color: #F3630C;
 }
 
 #notificationsUl > li {
-    margin: 1% 0;
+    margin: 1em 0;
     list-style: none;
+    padding: 1em;
+    box-shadow: 3px 3px 3px #A8A8A8;
+    border-radius: 15px;
+
 }
 
 .panel-footer-custom {
@@ -170,3 +174,13 @@ select {
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
 }
+
+
+
+ .badge > time {
+    position: relative;
+    right: 10px;
+    color: #005900;
+    font-size: 9px;
+} 
+
